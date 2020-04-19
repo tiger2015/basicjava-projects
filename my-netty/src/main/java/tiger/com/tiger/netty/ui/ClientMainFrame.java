@@ -1,43 +1,47 @@
 package tiger.com.tiger.netty.ui;
 
+import lombok.extern.slf4j.Slf4j;
 import tiger.com.tiger.netty.Client;
 import tiger.com.tiger.netty.common.MessageType;
+import tiger.com.tiger.netty.entity.ChatRecord;
 import tiger.com.tiger.netty.entity.CustomMessage;
 import tiger.com.tiger.netty.entity.MessageCallback;
-
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.util.ArrayList;
-import java.util.List;
+import tiger.com.tiger.netty.entity.MessageFrame;
+import tiger.com.tiger.netty.util.TimeUtil;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.*;
 
+@Slf4j
 public class ClientMainFrame extends JFrame {
 
     private JPanel contentPane;
-
     private JLabel accountLabel;
     private JButton exitButton;
     private JList userList;
     private UserListModel userListModel = new UserListModel();
     private Client client;
     private String account;
-    private MessageCallback callback;
+    private Map<String, DialogFrame> dialogFrameMap;
+
 
     public ClientMainFrame(String account, Client client) {
         this();
         this.client = client;
         this.account = account;
         this.accountLabel.setText(account);
-        this.callback = new MessageDisplayCallbak();
-        client.setDisplayMessageCallback(this.callback);
+        dialogFrameMap = new HashMap<>();
     }
 
 
     public ClientMainFrame() {
         setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 300, 600);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -87,12 +91,14 @@ public class ClientMainFrame extends JFrame {
 
             @Override
             public void windowClosing(WindowEvent e) {
-
+                log.info("closing window");
             }
 
             @Override
             public void windowClosed(WindowEvent e) {
+                log.info("window closed");
                 client.close();
+                System.exit(0);
             }
 
             @Override
@@ -115,73 +121,118 @@ public class ClientMainFrame extends JFrame {
 
             }
         });
-    }
 
-
-
-
-    void updateUserList(List<String> userList){
-        userListModel.updateAll(userList);
-    }
-
-
-
-    class MessageDisplayCallbak implements MessageCallback {
-        @Override
-        public void handle(CustomMessage customMessage) {
-            switch (customMessage.getType()) {
-                case USER_LIST:
-                    String[] split = customMessage.getBody().split(",");
-                    List<String> list = new ArrayList<>();
-                    for(String user:split){
-                        list.add(user);
-                    }
-                    updateUserList(list);
-                    break;
-                case SESSION:
-
-                    break;
+        userList.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int index = userList.getSelectedIndex();
+                    String user = userListModel.getElementAt(index);
+                    DialogFrame dialogFrame = new DialogFrame(account, user, client);
+                    dialogFrame.setVisible(true);
+                    dialogFrameMap.put(user, dialogFrame);
+                }
             }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+
+        exitButton.addActionListener(e -> {
+            client.close();
+            client.start();
+            ClientMainFrame.this.setVisible(false);
+        });
+    }
+
+
+    public void updateUserList(List<String> userList) {
+        userListModel.removeAll();
+        userListModel.addAll(userList);
+    }
+
+
+    public void handleMessage(CustomMessage customMessage) {
+        switch (customMessage.getType()) {
+            case USER_LIST:
+                String[] split = customMessage.getBody().split(",");
+                List<String> list = new ArrayList<>();
+                for (String user : split) {
+                    list.add(user);
+                }
+                updateUserList(list);
+                break;
+            case SESSION:
+                String from = customMessage.getFrom();
+                if (dialogFrameMap.containsKey(from)) {
+                    ChatRecord chatRecord = new ChatRecord(customMessage.getFrom(), TimeUtil.dateTimeToString(Calendar.getInstance().getTime()), customMessage.getBody());
+                    dialogFrameMap.get(from).notify(chatRecord);
+                }
+                break;
         }
     }
-
 
     private class UserListModel extends AbstractListModel<String> {
         private List<String> list = new ArrayList<>();
 
         @Override
-        public int getSize() {
-
+        public synchronized int getSize() {
             return list.size();
         }
 
         @Override
-        public String getElementAt(int index) {
+        public synchronized String getElementAt(int index) {
             // TODO Auto-generated method stub
             return list.get(index);
         }
 
-        public void add(String user) {
+        public synchronized void add(String user) {
             if (!list.contains(user)) {
                 list.add(user);
-                fireIntervalAdded(user, list.size(), list.size());
+                fireIntervalAdded(this, list.size() - 1, list.size() - 1);
             }
         }
 
-        public void remove(String user) {
+        public synchronized void remove(String user) {
             if (list.contains(user)) {
                 list.remove(user);
-                fireIntervalRemoved(user, list.size(), list.size());
+                fireIntervalRemoved(this, list.size() - 1, list.size() - 1);
             }
         }
 
-        public void updateAll(List<String> list) {
-            for (String user : this.list) {
-                    remove(user);
+        public synchronized void removeAll() {
+            if(list.size() == 0){
+                return;
             }
-            for(String user: list){
-                add(user);
-            }
+            int index1 = list.size() - 1;
+            this.list.clear();
+            fireIntervalRemoved(this, 0, index1);
+        }
+
+        public synchronized void addAll(List<String> list) {
+            this.list.clear();
+            this.list.addAll(list);
+            fireContentsChanged(this, 0, list.size() - 1);
         }
     }
 }
+
+
+

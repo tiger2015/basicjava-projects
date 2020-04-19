@@ -18,8 +18,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class Server {
     private static ServerBootstrap bootstrap = new ServerBootstrap();
+
     static {
-        System.setProperty("log4j.configurationFile","./config/");
+        // System.setProperty("log4j.configurationFile", "./config/log4j2.xml");
+       // java -jar -Dlog4j.configurationFile=./config/log4j2.xml server-1.0.jar
     }
 
     public static void main(String[] args) {

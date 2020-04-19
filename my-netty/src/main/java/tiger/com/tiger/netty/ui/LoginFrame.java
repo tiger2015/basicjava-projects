@@ -16,6 +16,12 @@ public class LoginFrame extends JFrame {
     private JTextField textField;
     private JPasswordField passwordField;
     private JButton loginButton;
+    private Client client;
+
+    public LoginFrame(Client client) {
+        this();
+        this.client = client;
+    }
 
     public LoginFrame() {
         setTitle("欢迎登录");
@@ -52,43 +58,8 @@ public class LoginFrame extends JFrame {
         loginButton.addActionListener(e -> {
             String account = textField.getText();
             String password = new String(passwordField.getPassword());
-            Client client = new NettyClient();
-            boolean connect = client.connect("127.0.0.1", 9000);
-            if (connect) {
-                MessageFrame frame = new MessageFrame();
-                frame.setType((byte) MessageType.LOGIN.flag);
-                frame.setFrom(account.getBytes());
-                frame.setTo("server".getBytes());
-                frame.setBody(password.getBytes());
-                client.send(frame.toBytes());
-            }
-            new Thread(() -> {
-                long time = 0;
-                for (; ; ) {
-                    if (client.isLoginSuccess()) {
-                        ClientMainFrame mainFrame = new ClientMainFrame(account, client);
-                        mainFrame.setVisible(true);
-                        mainFrame.updateUserList(client.getUserList());
-                        LoginFrame.this.dispose();
-                        break;
-                    }else {
-                        try {
-                            TimeUnit.MILLISECONDS.sleep(200);
-                        } catch (InterruptedException e1) {
-                            e1.printStackTrace();
-                        }
-                        time += 200;
-                        if (time > 10000) {
-                            break;
-                        }
-                    }
-                }
-                if(time > 10000){
-                    client.close();
-                }
-            }).start();
+            client.login(account, password);
         });
     }
-
 
 }

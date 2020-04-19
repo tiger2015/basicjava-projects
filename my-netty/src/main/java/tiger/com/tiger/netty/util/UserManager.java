@@ -1,18 +1,18 @@
 package tiger.com.tiger.netty.util;
 
+import lombok.extern.slf4j.Slf4j;
 import tiger.com.tiger.netty.entity.User;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 public class UserManager {
 
-    private static Map<String, User> users = new ConcurrentHashMap<>(22);
+    public static Map<String, User> users = new ConcurrentHashMap<>(22);
 
     public static void add(User user) {
-        users.putIfAbsent(user.getId(), user);
+        users.put(user.getId(), user);
     }
 
     public static void remove(String id) {
@@ -26,11 +26,20 @@ public class UserManager {
         return users.get(id);
     }
 
-    public static List<String> getUserList(){
-        if(users.size()==0){
+    public static List<String> getUserList() {
+        if (users.size() == 0) {
             return new ArrayList<>();
         }
-        return new ArrayList<>(users.keySet());
+        List<String> userList = new ArrayList<>();
+        for (String user : users.keySet()) {
+            if (users.get(user).isAlive()) {
+                userList.add(user);
+            }
+        }
+        Set<String> all = new HashSet<>(users.keySet());
+        all.removeAll(userList);
+        all.forEach(key->users.remove(key));
+        return userList;
     }
 
 }

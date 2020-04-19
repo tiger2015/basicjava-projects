@@ -4,11 +4,12 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import tiger.com.tiger.netty.common.UserState;
+import tiger.com.tiger.netty.util.UserManager;
 
 @Slf4j
 public class User {
     private String id; // 用户编号
-    private UserState state = UserState.LOGOUT; // 用户状态
+    private UserState state; // 用户状态
     private Channel channel; // 用户连接通道
 
     public User(String id, Channel channel) {
@@ -38,7 +39,12 @@ public class User {
         }
         log.info("user:{} logout", id);
         this.state = UserState.LOGOUT;
+        UserManager.remove(id);
         return true;
+    }
+
+    public boolean isAlive() {
+        return channel != null && channel.isActive();
     }
 
     public String getId() {

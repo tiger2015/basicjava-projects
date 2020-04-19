@@ -19,6 +19,6 @@ public class ChatRecord implements Serializable {
 
     @Override
     public String toString() {
-        return account + ": " + message + "\r\n";
+        return "======="+time + "======\r\n" + account + ": " + message + "\r\n";
     }
 }

@@ -48,6 +48,7 @@ public class ClientMessageHandler extends ChannelInboundHandlerAdapter {
 
 
     private void handleLoginMessage(ChannelHandlerContext ctx, CustomMessage customMessage) {
+        log.info("user:{} login", customMessage.getFrom());
         String from = customMessage.getFrom();
         String password = customMessage.getBody();
         User user = new User(from, ctx.channel());
@@ -58,10 +59,10 @@ public class ClientMessageHandler extends ChannelInboundHandlerAdapter {
         frame.setType((byte) (MessageType.STATUS.flag & 0xff));
         frame.setBody("200".getBytes());
         ctx.channel().writeAndFlush(Unpooled.copiedBuffer(frame.toBytes())); // 发送登录成功消息
-        sendUserList(ctx, customMessage);
+        sendUserList();
     }
 
-    private void sendUserList(ChannelHandlerContext ctx, CustomMessage customMessage) {
+    private void sendUserList() {
         List<String> list = UserManager.getUserList();
         if (list.size() == 0) {
             return;
@@ -74,14 +75,20 @@ public class ClientMessageHandler extends ChannelInboundHandlerAdapter {
         MessageFrame frame = new MessageFrame();
         frame.setType((byte) MessageType.USER_LIST.flag);
         frame.setFrom("server".getBytes());
-        frame.setTo(customMessage.getFrom().getBytes());
         frame.setBody(builder.toString().getBytes());
-        ctx.channel().writeAndFlush(Unpooled.copiedBuffer(frame.toBytes()));
+        for (String user : list) {
+            User client = UserManager.get(user);
+            frame.setTo(user.getBytes());
+            if (client != null) {
+                log.info("send user list to {}", user);
+                client.send(frame.toBytes());
+            }
+        }
     }
 
 
     private void relayMessage(ChannelHandlerContext ctx, CustomMessage customMessage) {
-        String to = customMessage.getTo();
+        String to = customMessage.getTo().trim();
         User user = UserManager.get(to);
         if (user != null && user.getState() != UserState.LOGOUT) {
             MessageFrame frame = new MessageFrame();
