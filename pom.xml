@@ -13,7 +13,7 @@
         <module>proxy</module>
         <module>my-quartz</module>
         <module>my-netty</module>
-        <module>lettuce-redis</module>
+        <module>redis-module</module>
     </modules>
 
     <name>basicjava-projects</name>
