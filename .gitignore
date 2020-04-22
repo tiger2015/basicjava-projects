@@ -110,3 +110,5 @@ buildNumber.properties
 /.idea/basicjava-projects.iml
 /.idea/codeStyles/codeStyleConfig.xml
 /.idea/misc.xml
+/.idea/compiler.xml
+/.idea/encodings.xml
