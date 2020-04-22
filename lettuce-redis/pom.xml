@@ -28,6 +28,16 @@
             <artifactId>lettuce-core</artifactId>
             <version>5.2.2.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>com.redislabs</groupId>
+            <artifactId>jredisearch</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.redislabs</groupId>
+            <artifactId>jrebloom</artifactId>
+            <version>1.2.0</version>
+        </dependency>
     </dependencies>
 
     <build>
