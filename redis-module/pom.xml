@@ -9,10 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>lettuce-redis</artifactId>
+    <artifactId>redis-module</artifactId>
     <version>1.0</version>
 
-    <name>lettuce-redis</name>
+    <name>redis-module</name>
     <!-- FIXME change it to the project's website -->
     <url>http://www.example.com</url>
 
