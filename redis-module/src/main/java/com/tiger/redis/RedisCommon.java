@@ -1,7 +1,10 @@
 package com.tiger.redis;
 
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.*;
+
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class RedisCommon {
 
@@ -17,7 +20,6 @@ public class RedisCommon {
 
     public static JedisPool createJedisPool() {
         JedisPool jedisPool = new JedisPool(poolConfig, "192.168.100.201", 6379, 3000, "tiger");
-        JedisPool jedisPool = new JedisPool(poolConfig, "192.168.200.201", 6379, 3000, "test");
         return jedisPool;
     }
 
