@@ -7,11 +7,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="lettuce-redis" />
         <module name="multithread" />
         <module name="my-netty" />
         <module name="my-quartz" />
         <module name="proxy" />
+        <module name="redis-module" />
       </profile>
     </annotationProcessing>
   </component>
