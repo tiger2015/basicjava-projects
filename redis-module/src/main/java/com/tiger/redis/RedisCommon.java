@@ -19,7 +19,7 @@ public class RedisCommon {
     }
 
     public static JedisPool createJedisPool() {
-        JedisPool jedisPool = new JedisPool(poolConfig, "192.168.200.201", 6379, 3000, "test");
+        JedisPool jedisPool = new JedisPool(poolConfig, "192.168.100.201", 6379, 3000, "tiger");
         return jedisPool;
     }
 
