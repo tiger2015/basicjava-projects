@@ -1,5 +1,6 @@
 package com.tiger.zookeeper;
 
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
@@ -36,6 +37,7 @@ public class ZookeeperApplication {
          update("/test/node1", "node");
 
          zooKeeper.close();
+
     }
 
 
