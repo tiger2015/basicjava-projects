@@ -13,8 +13,8 @@
         <module>proxy</module>
         <module>my-quartz</module>
         <module>my-netty</module>
-        <module>redis-test</module>
         <module>zookeeper-test</module>
+        <module>redis-test</module>
     </modules>
 
     <name>basicjava-projects</name>

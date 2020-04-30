@@ -34,7 +34,7 @@ public class ZookeeperApplication {
 
     public static void main(String[] args) throws KeeperException, InterruptedException {
         exists("/test/node1");
-        //create("/test/node1", "node1", CreateMode.PERSISTENT);
+        create("/test/node1", "node1", CreateMode.PERSISTENT);
          update("/test/node1", "node");
 
          zooKeeper.close();

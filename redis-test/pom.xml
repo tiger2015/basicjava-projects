@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>redis-test</artifactId>
-    <version>1.0</version>
 
     <name>redis-test</name>
     <!-- FIXME change it to the project's website -->
@@ -26,7 +25,7 @@
         <dependency>
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
-            <version>5.2.2.RELEASE</version>
+            <version>5.3.0.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>com.redislabs</groupId>
@@ -39,7 +38,7 @@
             <version>1.2.0</version>
         </dependency>
     </dependencies>
-
     <build>
+
     </build>
 </project>
