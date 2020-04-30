@@ -13,7 +13,7 @@
         <module>proxy</module>
         <module>my-quartz</module>
         <module>my-netty</module>
-        <module>redis-module</module>
+        <module>redis-test</module>
         <module>zookeeper-test</module>
     </modules>
 
