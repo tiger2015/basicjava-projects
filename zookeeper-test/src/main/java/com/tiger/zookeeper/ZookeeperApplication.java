@@ -10,7 +10,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName ZookeeperApplication
@@ -34,15 +36,24 @@ public class ZookeeperApplication {
     }
 
 
-    public static void main(String[] args) throws KeeperException, InterruptedException {
-        exists("/test");
+    public static void main(String[] args) throws InterruptedException {
+        //exists("/test/node1");
+
         //create("/test/node1", "node1", CreateMode.PERSISTENT);
         //update("/test/node1", "node");
 
-       // create("/test/seq", "", CreateMode.PERSISTENT_SEQUENTIAL);
+        //create("/lock/share_lock", "", CreateMode.PERSISTENT);
+        //update("/test/node1", "node");
 
-        List<String> nodes = getChildNodes("/test");
-        log.info("children:{}", nodes);
+        // create("/test/seq", "", CreateMode.PERSISTENT_SEQUENTIAL);
+
+
+        // update("/lock/share_lock", "");
+
+        new Thread(new UpdateThread()).start();
+        new Thread(new UpdateThread()).start();
+        new Thread(new UpdateThread()).start();
+        //zooKeeper.close();
 
         zooKeeper.close();
     }
@@ -59,17 +70,27 @@ public class ZookeeperApplication {
     public static void delete(String path) throws InterruptedException, KeeperException {
         connectSemaphere.await();
         if (zooKeeper != null) {
-            zooKeeper.delete(path, 0);
+            Stat stat = new Stat();
+            String s = get(path, stat);
+            if (s != null) {
+                zooKeeper.delete(path, stat.getVersion());
+            }
         }
     }
 
 
-    public static String get(String path, Stat stat) throws KeeperException, InterruptedException, UnsupportedEncodingException {
+    public static String get(String path, Stat stat) throws InterruptedException {
         connectSemaphere.await();
         if (zooKeeper != null) {
-            byte[] data = zooKeeper.getData(path, true, stat);
-            if (data != null) {
-                return new String(data, "UTF-8");
+            byte[] data;
+            try {
+                data = zooKeeper.getData(path, true, stat);
+                if (data != null) {
+                    return new String(data, StandardCharsets.UTF_8);
+                }
+            } catch (KeeperException e) {
+                log.warn("path:{} data is null", path);
+                log.error("occur error", e);
             }
         }
         return null;
@@ -85,10 +106,18 @@ public class ZookeeperApplication {
     }
 
 
-    public static void update(String path, String data) throws InterruptedException, KeeperException {
+    public static void update(String path, String data) throws InterruptedException {
         connectSemaphere.await();
         if (zooKeeper != null) {
-            zooKeeper.setData(path, data.getBytes(), 0);
+            Stat stat = new Stat();
+            String s = get(path, stat);
+            if (s != null) {
+                try {
+                    zooKeeper.setData(path, data.getBytes(), stat.getVersion());
+                } catch (KeeperException e) {
+                    log.error("update node fail", e);
+                }
+            }
         }
     }
 
@@ -116,4 +145,30 @@ public class ZookeeperApplication {
             }
         }
     }
+
+
+    public static class UpdateThread implements Runnable {
+
+        @Override
+        public void run() {
+            Stat stat = new Stat();
+            try {
+                synchronized (zooKeeper) {
+                    String s = get("/lock/share_lock", stat);
+                    int version = stat.getVersion();
+                    if (s != null) {
+                        get("/lock/share_lock", stat);
+                        if (stat.getVersion() == version) {
+                            update("/lock/share_lock", "");
+                        } else {
+                            log.warn("data changed before update,version:{} -> {}", version, stat.getVersion());
+                        }
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
+
