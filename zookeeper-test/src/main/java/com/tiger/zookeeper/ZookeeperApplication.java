@@ -7,6 +7,7 @@ import org.apache.zookeeper.data.Stat;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -57,12 +58,12 @@ public class ZookeeperApplication {
     }
 
 
-    public static String get(String path, Stat stat) throws KeeperException, InterruptedException, UnsupportedEncodingException {
+    public static String get(String path, Stat stat) throws KeeperException, InterruptedException {
         connectSemaphere.await();
         if (zooKeeper != null) {
             byte[] data = zooKeeper.getData(path, true, stat);
             if (data != null) {
-                return new String(data, "UTF-8");
+                return new String(data, StandardCharsets.UTF_8);
             }
         }
         return null;
