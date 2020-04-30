@@ -1,28 +1,119 @@
 package com.tiger.zookeeper;
 
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.*;
+import org.apache.zookeeper.data.Stat;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * @ClassName ZookeeperApplication
+ * @Description TODO
+ * @Author zeng.h
+ * @Date 2020/4/28 9:53
+ * @Version 1.0
+ **/
 @Slf4j
 public class ZookeeperApplication {
-     private static CountDownLatch connectedSemaphere = new CountDownLatch(1);
+    private static CountDownLatch connectSemaphere = new CountDownLatch(1);
+    private static ZooKeeper zooKeeper;
 
-    public static void main(String[] args) throws IOException, KeeperException, InterruptedException {
-        // 采用的是异步非阻塞方式
-        ZooKeeper zooKeeper = new ZooKeeper("192.168.100.201:2181,192.168.100.201:2182", 3000, event -> {
-            if(event.getState() == Watcher.Event.KeeperState.SyncConnected){
-                connectedSemaphere.countDown();
-            }
-        });
-        // 需要判断连接是否成功
-        connectedSemaphere.await();
-        ZooKeeper.States state = zooKeeper.getState();
-        log.info("state:{}", state.isConnected());
-        zooKeeper.create("/test", "test".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+    static {
+        try {
+            zooKeeper = new ZooKeeper("192.168.100.201:2181,192.168.100.201:2182", 3000, new ZookeeperWatcher());
+        } catch (IOException e) {
+            log.error("new zookeeper fail", e);
+            zooKeeper = null;
+        }
+    }
+
+
+    public static void main(String[] args) throws KeeperException, InterruptedException {
+        exists("/test");
+        //create("/test/node1", "node1", CreateMode.PERSISTENT);
+        //update("/test/node1", "node");
+
+       // create("/test/seq", "", CreateMode.PERSISTENT_SEQUENTIAL);
+
+        List<String> nodes = getChildNodes("/test");
+        log.info("children:{}", nodes);
+
         zooKeeper.close();
     }
 
+
+    public static void create(String path, String data, CreateMode mode) throws InterruptedException, KeeperException {
+        connectSemaphere.await();
+        if (zooKeeper != null) {
+            zooKeeper.create(path, data.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, mode);
+        }
+    }
+
+
+    public static void delete(String path) throws InterruptedException, KeeperException {
+        connectSemaphere.await();
+        if (zooKeeper != null) {
+            zooKeeper.delete(path, 0);
+        }
+    }
+
+
+    public static String get(String path, Stat stat) throws KeeperException, InterruptedException, UnsupportedEncodingException {
+        connectSemaphere.await();
+        if (zooKeeper != null) {
+            byte[] data = zooKeeper.getData(path, true, stat);
+            if (data != null) {
+                return new String(data, "UTF-8");
+            }
+        }
+        return null;
+    }
+
+    public static List<String> getChildNodes(String path) throws KeeperException, InterruptedException {
+        connectSemaphere.await();
+        List<String> children = new ArrayList<>();
+        if (zooKeeper != null) {
+            children = zooKeeper.getChildren(path, true);
+        }
+        return children;
+    }
+
+
+    public static void update(String path, String data) throws InterruptedException, KeeperException {
+        connectSemaphere.await();
+        if (zooKeeper != null) {
+            zooKeeper.setData(path, data.getBytes(), 0);
+        }
+    }
+
+    public static void exists(String path) throws InterruptedException, KeeperException {
+        connectSemaphere.await();
+        if (zooKeeper != null) {
+            zooKeeper.exists(path, true);
+        }
+    }
+
+    private static class ZookeeperWatcher implements Watcher {
+        @Override
+        public void process(WatchedEvent event) {
+            if (event.getState() == Event.KeeperState.SyncConnected) {
+                if (event.getType() == Event.EventType.None) {
+                    connectSemaphere.countDown();
+                    log.info("connect success");
+                } else if (event.getType() == Watcher.Event.EventType.NodeDataChanged) {
+                    log.info("node:{} data changed", event.getPath());
+                } else if (event.getType() == Watcher.Event.EventType.NodeDeleted) {
+                    log.info("node:{} delete", event.getPath());
+                } else if (event.getType() == Event.EventType.NodeCreated) {
+                    log.info("create node:{}", event.getPath());
+                }
+            }
+        }
+    }
 }

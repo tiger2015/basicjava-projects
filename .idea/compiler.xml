@@ -12,7 +12,6 @@
         <module name="my-quartz" />
         <module name="proxy" />
         <module name="redis-module" />
-        <module name="zookeeper-test" />
       </profile>
     </annotationProcessing>
   </component>
