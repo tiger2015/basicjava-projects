@@ -5,7 +5,6 @@ import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.async.RedisAsyncCommands;
 import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.cluster.RedisClusterClient;
-import io.lettuce.core.resource.ClientResources;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;

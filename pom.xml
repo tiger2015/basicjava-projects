@@ -15,6 +15,7 @@
         <module>my-netty</module>
         <module>zookeeper-test</module>
         <module>redis-test</module>
+        <module>springboot-test</module>
     </modules>
 
     <name>basicjava-projects</name>
