@@ -3,11 +3,17 @@ package com.tiger.zookeeper;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.*;
+import org.apache.zookeeper.data.ACL;
+import org.apache.zookeeper.data.Id;
 import org.apache.zookeeper.data.Stat;
+import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -33,20 +39,31 @@ public class ZookeeperApplication {
     }
 
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, KeeperException, NoSuchAlgorithmException {
         //exists("/test/node1");
         //create("/test/node1", "node1", CreateMode.PERSISTENT);
         //update("/test/node1", "node");
 
         //create("/lock/share_lock", "", CreateMode.PERSISTENT);
 
-       // update("/lock/share_lock", "");
+        // update("/lock/share_lock", "");
 
-        new Thread(new UpdateThread()).start();
-        new Thread(new UpdateThread()).start();
-        new Thread(new UpdateThread()).start();
+        // new Thread(new UpdateThread()).start();
+        // new Thread(new UpdateThread()).start();
+        // new Thread(new UpdateThread()).start();
         //zooKeeper.close();
 
+        List<ACL> acls = new ArrayList<>();
+        // 采用加密的方式授权，在访问时不需要加密
+        String s = DigestAuthenticationProvider.generateDigest("test:test");
+        acls.add(new ACL(ZooDefs.Perms.READ, new Id("digest", s)));
+
+        //createWithAcl("/auth_test", "auth_test", CreateMode.PERSISTENT, acls);
+
+        addAuth("digest", "test:test");
+        Stat stat = new Stat();
+        get("/auth_test", stat);
+        log.info(stat.toString());
     }
 
 
@@ -54,6 +71,14 @@ public class ZookeeperApplication {
         connectSemaphere.await();
         if (zooKeeper != null) {
             zooKeeper.create(path, data.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, mode);
+        }
+    }
+
+
+    public static void createWithAcl(String path, String data, CreateMode mode, List<ACL> acls) throws InterruptedException, KeeperException {
+        connectSemaphere.await();
+        if (zooKeeper != null) {
+            zooKeeper.create(path, data.getBytes(), acls, mode);
         }
     }
 
@@ -69,6 +94,12 @@ public class ZookeeperApplication {
         }
     }
 
+    public static void addAuth(String schema, String id) throws InterruptedException {
+        connectSemaphere.await();
+        if (zooKeeper != null) {
+            zooKeeper.addAuthInfo(schema, id.getBytes());
+        }
+    }
 
     public static String get(String path, Stat stat) throws InterruptedException {
         connectSemaphere.await();
@@ -134,14 +165,14 @@ public class ZookeeperApplication {
         public void run() {
             Stat stat = new Stat();
             try {
-                synchronized (zooKeeper){
+                synchronized (zooKeeper) {
                     String s = get("/lock/share_lock", stat);
                     int version = stat.getVersion();
                     if (s != null) {
                         get("/lock/share_lock", stat);
-                        if(stat.getVersion() == version){
+                        if (stat.getVersion() == version) {
                             update("/lock/share_lock", "");
-                        }else {
+                        } else {
                             log.warn("data changed before update,version:{} -> {}", version, stat.getVersion());
                         }
                     }
