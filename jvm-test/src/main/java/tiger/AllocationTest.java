@@ -20,7 +20,7 @@ public class AllocationTest {
     }
 
     public static void main(String[] args) {
-        // testAllocation();
-        testPretenureSizeThreshlod();
+        testAllocation();
+        //testPretenureSizeThreshlod();
     }
 }

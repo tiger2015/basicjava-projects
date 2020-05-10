@@ -1,7 +1,5 @@
 package tiger;
 
-import java.io.Serializable;
-
 public class Overload {
 
     public static void sayHello(Object arg) {
