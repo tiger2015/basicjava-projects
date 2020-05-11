@@ -10,6 +10,9 @@ import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -31,7 +34,7 @@ public class ZookeeperApplication {
 
     static {
         try {
-            zooKeeper = new ZooKeeper("192.168.200.201:2181,192.168.200.201:2182", 3000, new ZookeeperWatcher());
+            zooKeeper = new ZooKeeper("192.168.100.201:2181,192.168.100.201:2182", 3000, new ZookeeperWatcher());
         } catch (IOException e) {
             log.error("new zookeeper fail", e);
             zooKeeper = null;
@@ -41,10 +44,15 @@ public class ZookeeperApplication {
 
     public static void main(String[] args) throws InterruptedException, KeeperException, NoSuchAlgorithmException {
         //exists("/test/node1");
+
         //create("/test/node1", "node1", CreateMode.PERSISTENT);
         //update("/test/node1", "node");
 
         //create("/lock/share_lock", "", CreateMode.PERSISTENT);
+        //update("/test/node1", "node");
+
+        // create("/test/seq", "", CreateMode.PERSISTENT_SEQUENTIAL);
+
 
         // update("/lock/share_lock", "");
 
@@ -53,6 +61,7 @@ public class ZookeeperApplication {
         // new Thread(new UpdateThread()).start();
         //zooKeeper.close();
 
+        zooKeeper.close();
         List<ACL> acls = new ArrayList<>();
         // 采用加密的方式授权，在访问时不需要加密
         String s = DigestAuthenticationProvider.generateDigest("test:test");
@@ -118,6 +127,16 @@ public class ZookeeperApplication {
         return null;
     }
 
+    public static List<String> getChildNodes(String path) throws KeeperException, InterruptedException {
+        connectSemaphere.await();
+        List<String> children = new ArrayList<>();
+        if (zooKeeper != null) {
+            children = zooKeeper.getChildren(path, true);
+        }
+        return children;
+    }
+
+
     public static void update(String path, String data) throws InterruptedException {
         connectSemaphere.await();
         if (zooKeeper != null) {
@@ -182,5 +201,5 @@ public class ZookeeperApplication {
             }
         }
     }
-
 }
+
