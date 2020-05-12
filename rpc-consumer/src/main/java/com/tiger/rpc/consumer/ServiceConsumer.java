@@ -3,9 +3,15 @@ package com.tiger.rpc.consumer;
 import com.tiger.rpc.common.RpcRequest;
 import com.tiger.rpc.service.UserService;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolver;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -28,7 +34,7 @@ public class ServiceConsumer {
          Bootstrap bootstrap = new Bootstrap();
          bootstrap.group(worker);
          bootstrap.channel(NioSocketChannel.class);
-         bootstrap.handler(null)
+         bootstrap.handler(new ChnannelInitHandler())
                  .option(ChannelOption.TCP_NODELAY, true)
                  .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
                  .option(ChannelOption.SO_KEEPALIVE, true);
@@ -42,6 +48,17 @@ public class ServiceConsumer {
 
      public void send(RpcRequest rpcRequest){
 
+     }
+
+
+     private class ChnannelInitHandler extends ChannelInitializer<SocketChannel> {
+
+
+         @Override
+         protected void initChannel(SocketChannel ch) throws Exception {
+             ch.pipeline().addLast(new ObjectDecoder(1024 * 1024, ClassResolvers.weakCachingConcurrentResolver(ServiceConsumer.class.getClassLoader())));
+             ch.pipeline().addLast(new ObjectEncoder());
+         }
      }
 
 
