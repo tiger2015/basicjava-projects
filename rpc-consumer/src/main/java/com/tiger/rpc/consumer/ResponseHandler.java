@@ -14,19 +14,31 @@ import lombok.extern.slf4j.Slf4j;
  **/
 @Slf4j
 public class ResponseHandler extends ChannelInboundHandlerAdapter {
+    private ServiceConsumer consumer;
+
+    public ResponseHandler(ServiceConsumer consumer) {
+        this.consumer = consumer;
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         RpcResponse response = (RpcResponse) msg;
+        log.info("receive response:{}", response);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         super.exceptionCaught(ctx, cause);
+        log.error("channel occure error", cause);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        super.channelInactive(ctx);
+        log.warn("channel inactive");
+        ctx.channel().eventLoop().execute(() -> {
+            log.info("consumer reconnect");
+            consumer.close();
+            consumer.connect();
+        });
     }
 }
