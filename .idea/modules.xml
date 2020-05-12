@@ -9,6 +9,12 @@
       <module fileurl="file://$PROJECT_DIR$/my-quartz/my-quartz.iml" filepath="$PROJECT_DIR$/my-quartz/my-quartz.iml" />
       <module fileurl="file://$PROJECT_DIR$/proxy/proxy.iml" filepath="$PROJECT_DIR$/proxy/proxy.iml" />
       <module fileurl="file://$PROJECT_DIR$/redis-test/redis-test.iml" filepath="$PROJECT_DIR$/redis-test/redis-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rpc-api/rpc-api.iml" filepath="$PROJECT_DIR$/rpc-api/rpc-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rpc-api/rpc-api.iml" filepath="$PROJECT_DIR$/rpc-api/rpc-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rpc-consumer/rpc-consumer.iml" filepath="$PROJECT_DIR$/rpc-consumer/rpc-consumer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rpc-consumer/rpc-consumer.iml" filepath="$PROJECT_DIR$/rpc-consumer/rpc-consumer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rpc-provider/rpc-provider.iml" filepath="$PROJECT_DIR$/rpc-provider/rpc-provider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rpc-provider/rpc-provider.iml" filepath="$PROJECT_DIR$/rpc-provider/rpc-provider.iml" />
       <module fileurl="file://$PROJECT_DIR$/zookeeper-test/zookeeper-test.iml" filepath="$PROJECT_DIR$/zookeeper-test/zookeeper-test.iml" />
     </modules>
   </component>
