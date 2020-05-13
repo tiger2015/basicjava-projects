@@ -1,7 +1,5 @@
 package com.tiger.rpc.provider.service;
 
-import com.sun.corba.se.internal.CosNaming.BootstrapServer;
-import com.sun.xml.internal.bind.api.ClassResolver;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -25,12 +23,15 @@ public class ServiceProvider {
     private NioEventLoopGroup boss = new NioEventLoopGroup(4);
     private int port;
 
+    public ServiceProvider(int port) {
+        this.port = port;
+    }
+
     public void start() {
         try {
             ServerBootstrap server = new ServerBootstrap();
             server.group(boss, worker)
                     .channel(NioServerSocketChannel.class)
-                    .option(ChannelOption.SO_KEEPALIVE, true)
                     .option(ChannelOption.SO_BACKLOG, 100)
                     .childHandler(new ChannelInitHandler());
             ChannelFuture future = server.bind(port).sync();
@@ -45,10 +46,15 @@ public class ServiceProvider {
 
         @Override
         protected void initChannel(SocketChannel ch) throws Exception {
-            ch.pipeline().addLast(new ObjectDecoder(1024 * 1024, ClassResolvers.weakCachingConcurrentResolver(ServiceProvider.this.getClass().getClassLoader())));
             ch.pipeline().addLast(new ObjectEncoder());
+            ch.pipeline().addLast(new ObjectDecoder(1024 * 1024, ClassResolvers.weakCachingConcurrentResolver(ServiceProvider.this.getClass().getClassLoader())));
             ch.pipeline().addLast(new RequestHandler());
         }
+    }
+
+    public static void main(String[] args) {
+        ServiceProvider serviceProvider = new ServiceProvider(8000);
+        serviceProvider.start();
     }
 
 

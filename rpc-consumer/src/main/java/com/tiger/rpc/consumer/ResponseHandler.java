@@ -21,9 +21,16 @@ public class ResponseHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        super.channelActive(ctx);
+        consumer.channelActive();
+    }
+
+    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         RpcResponse response = (RpcResponse) msg;
         log.info("receive response:{}", response);
+        consumer.callback(response.getResult());
     }
 
     @Override
@@ -35,6 +42,7 @@ public class ResponseHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         log.warn("channel inactive");
+        consumer.channelInactive();
         ctx.channel().eventLoop().execute(() -> {
             log.info("consumer reconnect");
             consumer.close();
