@@ -40,10 +40,6 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
         }
 
 
-        UserService userService = new UserServiceImpl();
-        UserService instance = (UserService) Proxy.newProxyInstance(userService.getClass().getClassLoader(),
-                userService.getClass().getInterfaces(), new ServiceInvocationHandler(userService));
-
     }
 
     @Override
