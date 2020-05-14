@@ -24,6 +24,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName ServiceConsumer
@@ -38,6 +40,7 @@ public class ServiceConsumer {
     private String ip;
     private int port;
     private Channel channel;
+    private CountDownLatch countDownLatch = new CountDownLatch(1);
 
     public ServiceConsumer(String ip, int port) {
         this.ip = ip;
@@ -57,11 +60,10 @@ public class ServiceConsumer {
             future.addListener(future1 -> {
                 if (!future1.isSuccess()) {
                     log.warn("connect fail, start reconnect");
-                    channel.eventLoop().execute(() -> connect());
+                    channel.eventLoop().schedule(() -> connect(), 1, TimeUnit.SECONDS);
                 }
             });
             channel = future.channel();
-            channel.closeFuture().sync();
         } catch (Exception e) {
             log.error("connect fail", e);
         }
@@ -74,7 +76,16 @@ public class ServiceConsumer {
         }
     }
 
-    public void send(RpcRequest rpcRequest) {
+    public void channelInactive() {
+        countDownLatch = new CountDownLatch(1);
+    }
+
+    public void channelActive() {
+        countDownLatch.countDown();
+    }
+
+    public void send(RpcRequest rpcRequest) throws InterruptedException {
+        countDownLatch.await();
         if (!Objects.isNull(channel) && channel.isActive()) {
             channel.writeAndFlush(rpcRequest).addListener(future -> {
                 if (future.isSuccess()) {
@@ -99,7 +110,9 @@ public class ServiceConsumer {
     public static void main(String[] args) {
         ServiceConsumer consumer = new ServiceConsumer("127.0.0.1", 8000);
         consumer.connect();
-       // consumer.send();
+        UserServiceProxy proxy = new UserServiceProxy(consumer);
+        UserService userService = proxy.newUserServicePorxy();
+        userService.hello("ttttt");
     }
 
 }
