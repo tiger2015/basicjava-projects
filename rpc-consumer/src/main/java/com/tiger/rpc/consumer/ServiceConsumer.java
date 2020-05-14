@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * @Version 1.0
  **/
 @Slf4j
-public class ServiceConsumer {
+public class ServiceConsumer implements MethodCallback{
     private static NioEventLoopGroup worker = new NioEventLoopGroup(4);
     private String ip;
     private int port;
