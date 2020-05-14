@@ -1,5 +1,7 @@
 package com.tiger.rpc.provider.service;
 
+import com.sun.corba.se.internal.CosNaming.BootstrapServer;
+import com.sun.xml.internal.bind.api.ClassResolver;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -34,6 +36,7 @@ public class ServiceProvider {
             ServerBootstrap server = new ServerBootstrap();
             server.group(boss, worker)
                     .channel(NioServerSocketChannel.class)
+                    .option(ChannelOption.SO_KEEPALIVE, true)
                     .option(ChannelOption.SO_BACKLOG, 100)
                     .childHandler(new ChannelInitHandler());
             ChannelFuture future = server.bind(port).sync();

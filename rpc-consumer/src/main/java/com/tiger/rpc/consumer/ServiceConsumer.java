@@ -64,6 +64,7 @@ public class ServiceConsumer {
                 }
             });
             channel = future.channel();
+            channel.closeFuture().sync();
         } catch (Exception e) {
             log.error("connect fail", e);
         }
@@ -92,9 +93,16 @@ public class ServiceConsumer {
                     log.info("send request success");
                 }
             });
+        } else {
+            log.info("channel is inactive");
         }
     }
 
+
+    @Override
+    public void callback(Object object) {
+        log.info("result:{}", object);
+    }
 
     private class ChnannelInitHandler extends ChannelInitializer<SocketChannel> {
 
