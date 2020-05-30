@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * @Version 1.0
  **/
 @Slf4j
-public class ServiceConsumer implements MethodCallback{
+public class ServiceConsumer implements MethodCallback {
     private static NioEventLoopGroup worker = new NioEventLoopGroup(4);
     private String ip;
     private int port;
@@ -64,7 +64,8 @@ public class ServiceConsumer implements MethodCallback{
                 }
             });
             channel = future.channel();
-            channel.closeFuture().sync();
+            // 该方法会阻塞
+            // channel.closeFuture().sync();
         } catch (Exception e) {
             log.error("connect fail", e);
         }
@@ -88,6 +89,7 @@ public class ServiceConsumer implements MethodCallback{
     public void send(RpcRequest rpcRequest) throws InterruptedException {
         countDownLatch.await();
         if (!Objects.isNull(channel) && channel.isActive()) {
+            log.info("send request");
             channel.writeAndFlush(rpcRequest).addListener(future -> {
                 if (future.isSuccess()) {
                     log.info("send request success");
@@ -109,17 +111,18 @@ public class ServiceConsumer implements MethodCallback{
         @Override
         protected void initChannel(SocketChannel ch) throws Exception {
             ch.pipeline().addLast(new ObjectDecoder(1024 * 1024, ClassResolvers.weakCachingConcurrentResolver(ServiceConsumer.class.getClassLoader())));
-            ch.pipeline().addLast(new ObjectEncoder());
             ch.pipeline().addLast(new ResponseHandler(ServiceConsumer.this));
+            ch.pipeline().addLast(new ObjectEncoder());
         }
     }
 
 
     public static void main(String[] args) {
-        ServiceConsumer consumer = new ServiceConsumer("127.0.0.1", 8000);
+        ServiceConsumer consumer = new ServiceConsumer("127.0.0.1", 9000);
         consumer.connect();
         UserServiceProxy proxy = new UserServiceProxy(consumer);
         UserService userService = proxy.newUserServicePorxy();
+        log.info("==========");
         userService.hello("ttttt");
     }
 

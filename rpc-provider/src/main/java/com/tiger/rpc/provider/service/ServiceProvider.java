@@ -1,7 +1,5 @@
 package com.tiger.rpc.provider.service;
 
-import com.sun.corba.se.internal.CosNaming.BootstrapServer;
-import com.sun.xml.internal.bind.api.ClassResolver;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -41,7 +39,7 @@ public class ServiceProvider {
                     .childHandler(new ChannelInitHandler());
             ChannelFuture future = server.bind(port).sync();
             log.info("start service provider");
-            // 改方法会阻塞当前线程执行
+            // 该方法会阻塞当前线程执行
             future.channel().closeFuture().sync();
         } catch (Exception e) {
             log.error("start service provider fail", e);

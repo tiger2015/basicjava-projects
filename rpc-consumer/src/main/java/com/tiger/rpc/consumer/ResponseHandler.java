@@ -26,6 +26,7 @@ public class ResponseHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         consumer.channelActive();
+        log.info("channel active");
     }
 
     @Override

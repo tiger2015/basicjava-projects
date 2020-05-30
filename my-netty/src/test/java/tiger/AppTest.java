@@ -1,7 +1,7 @@
 package tiger;
 
 import org.junit.Test;
-import tiger.com.tiger.netty.util.ByteUtil;
+import com.tiger.netty.util.ByteUtil;
 
 import java.io.UnsupportedEncodingException;
 
