@@ -5,6 +5,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @ClassName ResponseHandler
  * @Description TODO
@@ -24,13 +26,13 @@ public class ResponseHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         consumer.channelActive();
+        log.info("channel active");
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         RpcResponse response = (RpcResponse) msg;
         log.info("receive response:{}", response);
-        consumer.callback(response.getResult());
     }
 
     @Override
@@ -43,10 +45,10 @@ public class ResponseHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         log.warn("channel inactive");
         consumer.channelInactive();
-        ctx.channel().eventLoop().execute(() -> {
+        ctx.channel().eventLoop().schedule(() -> {
             log.info("consumer reconnect");
             consumer.close();
             consumer.connect();
-        });
+        }, 1, TimeUnit.SECONDS);
     }
 }

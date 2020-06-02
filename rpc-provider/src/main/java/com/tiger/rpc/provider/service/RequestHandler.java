@@ -22,6 +22,7 @@ import java.lang.reflect.Proxy;
 public class RequestHandler extends ChannelInboundHandlerAdapter {
     private UserService userService = new UserServiceImpl();
 
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
@@ -33,7 +34,7 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
             response.setResult(result);
             ctx.channel().writeAndFlush(response);
         } catch (Exception e) {
-            log.error("invoke method occur error", e);
+            log.error("invoke method fail", e);
         } finally {
             ReferenceCountUtil.release(msg);
         }

@@ -19,6 +19,10 @@
         <module>rpc-api</module>
         <module>rpc-consumer</module>
         <module>jvm-test</module>
+        <module>java-nio</module>
+        <module>rmi-common</module>
+        <module>rmi-server</module>
+        <module>rmi-client</module>
     </modules>
 
     <name>basicjava-projects</name>

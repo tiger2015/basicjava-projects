@@ -1,11 +1,15 @@
 package com.tiger.rpc.consumer;
 
 import com.tiger.rpc.common.RpcRequest;
+import com.tiger.rpc.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+@Slf4j
 public class ServiceInvocationHandler implements InvocationHandler {
+    private static Class serviceClass = UserService.class;
     private ServiceConsumer consumer;
 
     public ServiceInvocationHandler(ServiceConsumer consumer) {
@@ -14,12 +18,7 @@ public class ServiceInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        RpcRequest request = new RpcRequest();
-        request.setClassName(method.getDeclaringClass().getName());
-        request.setMethodName(method.getName());
-        request.setParams(args);
-        request.setTypes(method.getParameterTypes());
-        consumer.send(request);
+       log.info("invoke method");
         return null;
     }
 }

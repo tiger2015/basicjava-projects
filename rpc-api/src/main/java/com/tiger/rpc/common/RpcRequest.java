@@ -1,6 +1,7 @@
 package com.tiger.rpc.common;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class RpcRequest implements Serializable {
     private static final long serialVersionUID = -4457882669733203426L;
@@ -39,5 +40,15 @@ public class RpcRequest implements Serializable {
 
     public void setTypes(Class[] types) {
         this.types = types;
+    }
+
+    @Override
+    public String toString() {
+        return "RpcRequest{" +
+                "className='" + className + '\'' +
+                ", methodName='" + methodName + '\'' +
+                ", params=" + Arrays.toString(params) +
+                ", types=" + Arrays.toString(types) +
+                '}';
     }
 }
