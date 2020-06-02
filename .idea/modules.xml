@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/my-netty/my-netty.iml" filepath="$PROJECT_DIR$/my-netty/my-netty.iml" />
       <module fileurl="file://$PROJECT_DIR$/my-quartz/my-quartz.iml" filepath="$PROJECT_DIR$/my-quartz/my-quartz.iml" />
       <module fileurl="file://$PROJECT_DIR$/proxy/proxy.iml" filepath="$PROJECT_DIR$/proxy/proxy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rabbitmq-test/rabbitmq-test.iml" filepath="$PROJECT_DIR$/rabbitmq-test/rabbitmq-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/redis-test/redis-test.iml" filepath="$PROJECT_DIR$/redis-test/redis-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/rmi-client/rmi-client.iml" filepath="$PROJECT_DIR$/rmi-client/rmi-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/rmi-common/rmi-common.iml" filepath="$PROJECT_DIR$/rmi-common/rmi-common.iml" />

@@ -23,6 +23,7 @@
         <module>rmi-common</module>
         <module>rmi-server</module>
         <module>rmi-client</module>
+        <module>rabbitmq-test</module>
     </modules>
 
     <name>basicjava-projects</name>
