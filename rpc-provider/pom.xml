@@ -11,7 +11,7 @@
 
     <artifactId>rpc-provider</artifactId>
 
-    <name>rpc-providerddd</name>
+    <name>rpc-provider</name>
     <!-- FIXME change it to the project's website -->
     <url>http://www.example.com</url>
 

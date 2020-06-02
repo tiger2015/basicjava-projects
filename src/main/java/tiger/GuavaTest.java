@@ -5,9 +5,11 @@ import com.google.common.base.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
+import com.google.common.util.concurrent.RateLimiter;
 import org.apache.logging.log4j.util.Strings;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +61,15 @@ public class GuavaTest {
         String str1 = "avs,,,dfd,ddf,ggg";
         List<String> list3 = Splitter.on(',').omitEmptyStrings().splitToList(str1);
         System.out.println(list3);
+
+
+        RateLimiter rateLimiter = RateLimiter.create(100);
+        for (int i = 0; i < 100; i++) {
+            new Thread(()->{
+                rateLimiter.acquire();
+                System.out.println(Instant.now());
+            }).start();
+        }
 
 
     }

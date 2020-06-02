@@ -9,7 +9,5 @@ public class RedisBloomFilter {
         Client bloomClient = new Client(RedisCommon.createJedisPool());
         bloomClient.createFilter("test", 10000, 0.0001);
 
-
-
     }
 }
