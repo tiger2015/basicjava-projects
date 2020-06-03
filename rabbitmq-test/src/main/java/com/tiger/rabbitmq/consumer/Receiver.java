@@ -1,6 +1,7 @@
 package com.tiger.rabbitmq.consumer;
 
 import com.rabbitmq.client.*;
+import com.tiger.rabbitmq.common.ChannelFactory;
 import com.tiger.rabbitmq.common.MyMessage;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,28 +18,27 @@ import java.util.concurrent.TimeoutException;
  **/
 @Slf4j
 public class Receiver {
-    private String queueName;
-    private String host;
+    private String queue;
+    private String exchange;
     private Channel channel;
 
-    public Receiver(String queueName, String host) {
-        this.queueName = queueName;
-        this.host = host;
+
+    public Receiver(String queue, String exchange) {
+        this.queue = queue;
+        this.exchange = exchange;
     }
 
     public void connect() throws IOException, TimeoutException {
-        ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost(host);
-        connectionFactory.setUsername("test");
-        connectionFactory.setPassword("test");
-        Connection connection = connectionFactory.newConnection();
-        channel = connection.createChannel();
-        channel.queueDeclare(queueName, true, false, false, null);
+        channel = ChannelFactory.createChannel();
+//        channel.queueDeclare(queueName, true, false, false, null);
+        channel.exchangeDeclare(exchange, "fanout");
+       // queue = channel.queueDeclare().getQueue();
+        channel.queueBind(queue, exchange, "");
     }
 
     public void consume(Consumer callback) throws IOException {
         if (!Objects.isNull(channel) && channel.isOpen()) {
-            channel.basicConsume(queueName, callback);
+            channel.basicConsume(queue, true, callback);
         }
     }
 
@@ -50,11 +50,11 @@ public class Receiver {
 
 
     public static void main(String[] args) throws IOException, TimeoutException {
-        Receiver receiver = new Receiver("test", "192.168.200.201");
+        Receiver receiver = new Receiver("test", "exchange");
         receiver.connect();
 
 
-        Receiver receiver2 = new Receiver("test", "192.168.200.201");
+        Receiver receiver2 = new Receiver("test", "exchange");
         receiver2.connect();
 
         receiver.consume(new MessageCallBack("user1"));
@@ -92,7 +92,6 @@ public class Receiver {
 
         @Override
         public void handleRecoverOk(String consumerTag) {
-
         }
 
         @Override
