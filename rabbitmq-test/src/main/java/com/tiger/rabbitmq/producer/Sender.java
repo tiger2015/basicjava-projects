@@ -35,7 +35,7 @@ public class Sender {
 
     public void connect() throws IOException, TimeoutException {
         channel = ChannelFactory.createChannel();
-        channel.queueDeclare(queue, true, false, false, null);
+        // channel.queueDeclare(queue, true, false, false, null);
         channel.exchangeDeclare(exchange, "fanout");
         log.info("connect success");
     }

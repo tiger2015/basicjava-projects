@@ -13,10 +13,10 @@ public class ChannelFactory {
 
     static {
         ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost("192.168.100.201");
+        connectionFactory.setHost("192.168.200.201");
         connectionFactory.setUsername("test");
         connectionFactory.setPassword("test");
-        connectionFactory.setVirtualHost("test_vhost");
+        connectionFactory.setVirtualHost("/");
         try {
             connection = connectionFactory.newConnection();
         } catch (IOException e) {

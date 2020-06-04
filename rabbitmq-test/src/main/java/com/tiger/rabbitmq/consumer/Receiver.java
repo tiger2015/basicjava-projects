@@ -30,7 +30,7 @@ public class Receiver {
 
     public void connect() throws IOException, TimeoutException {
         channel = ChannelFactory.createChannel();
-//        channel.queueDeclare(queueName, true, false, false, null);
+        channel.queueDeclare(queue, false, false, true, null);
         channel.exchangeDeclare(exchange, "fanout");
        // queue = channel.queueDeclare().getQueue();
         channel.queueBind(queue, exchange, "");
@@ -50,11 +50,11 @@ public class Receiver {
 
 
     public static void main(String[] args) throws IOException, TimeoutException {
-        Receiver receiver = new Receiver("test", "exchange");
+        Receiver receiver = new Receiver("test1", "exchange");
         receiver.connect();
 
 
-        Receiver receiver2 = new Receiver("test", "exchange");
+        Receiver receiver2 = new Receiver("test2", "exchange");
         receiver2.connect();
 
         receiver.consume(new MessageCallBack("user1"));
