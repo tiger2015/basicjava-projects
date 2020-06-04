@@ -32,13 +32,13 @@ public class Receiver {
         channel = ChannelFactory.createChannel();
         channel.queueDeclare(queue, false, false, true, null);
         channel.exchangeDeclare(exchange, "fanout");
-       // queue = channel.queueDeclare().getQueue();
+        // queue = channel.queueDeclare().getQueue();
         channel.queueBind(queue, exchange, "");
     }
 
-    public void consume(Consumer callback) throws IOException {
+    public void consume() throws IOException {
         if (!Objects.isNull(channel) && channel.isOpen()) {
-            channel.basicConsume(queue, true, callback);
+            channel.basicConsume(queue, false, new MessageCallBack("user"));
         }
     }
 
@@ -49,21 +49,7 @@ public class Receiver {
     }
 
 
-    public static void main(String[] args) throws IOException, TimeoutException {
-        Receiver receiver = new Receiver("test1", "exchange");
-        receiver.connect();
-
-
-        Receiver receiver2 = new Receiver("test2", "exchange");
-        receiver2.connect();
-
-        receiver.consume(new MessageCallBack("user1"));
-        receiver2.consume(new MessageCallBack("user2"));
-
-    }
-
-
-    private static class MessageCallBack implements Consumer {
+    private class MessageCallBack implements Consumer {
         private String receiver;
 
         public MessageCallBack(String receiver) {
@@ -98,7 +84,22 @@ public class Receiver {
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
             MyMessage message = MyMessage.convertToObject(body);
             log.info("{} receive message:{}", receiver, message);
+            channel.basicAck(envelope.getDeliveryTag(), false);
         }
     }
+
+    public static void main(String[] args) throws IOException, TimeoutException {
+        Receiver receiver = new Receiver("test1", "exchange");
+        receiver.connect();
+
+
+        Receiver receiver2 = new Receiver("test2", "exchange");
+        receiver2.connect();
+
+        receiver.consume();
+        receiver2.consume();
+
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package com.tiger.rabbitmq.producer;
 
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.ConfirmListener;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.tiger.rabbitmq.common.ChannelFactory;
@@ -37,6 +38,17 @@ public class Sender {
         channel = ChannelFactory.createChannel();
         // channel.queueDeclare(queue, true, false, false, null);
         channel.exchangeDeclare(exchange, "fanout");
+        channel.addConfirmListener(new ConfirmListener() {
+            @Override
+            public void handleAck(long deliveryTag, boolean multiple) throws IOException {
+                log.info("deliver tag:{}", deliveryTag);
+            }
+
+            @Override
+            public void handleNack(long deliveryTag, boolean multiple) throws IOException {
+                log.info("deliver tag:{}", deliveryTag);
+            }
+        });
         log.info("connect success");
     }
 
