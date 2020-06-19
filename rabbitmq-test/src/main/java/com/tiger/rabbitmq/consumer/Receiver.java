@@ -2,6 +2,7 @@ package com.tiger.rabbitmq.consumer;
 
 import com.rabbitmq.client.*;
 import com.tiger.rabbitmq.common.ChannelFactory;
+import com.tiger.rabbitmq.common.ExchangeType;
 import com.tiger.rabbitmq.common.MyMessage;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,22 +19,26 @@ import java.util.concurrent.TimeoutException;
  **/
 @Slf4j
 public class Receiver {
-    private String queue;
+    private String flag;
     private String exchange;
+    private ExchangeType type;
+    private String route;
+    private String queue;
     private Channel channel;
 
-
-    public Receiver(String queue, String exchange) {
-        this.queue = queue;
+    public Receiver(String flag, String exchange, ExchangeType type, String route, String queue) {
+        this.flag = flag;
         this.exchange = exchange;
+        this.type = type;
+        this.route = route;
+        this.queue = queue;
     }
 
     public void connect() throws IOException, TimeoutException {
         channel = ChannelFactory.createChannel();
-        channel.queueDeclare(queue, false, false, true, null);
-        channel.exchangeDeclare(exchange, "fanout");
-        // queue = channel.queueDeclare().getQueue();
-        channel.queueBind(queue, exchange, "");
+        channel.queueDeclare(queue, true, false, false, null);
+        //channel.exchangeDeclare(exchange, type.name);
+        channel.queueBind(queue, exchange, route);
     }
 
     public void consume() throws IOException {
@@ -83,20 +88,18 @@ public class Receiver {
         @Override
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
             MyMessage message = MyMessage.convertToObject(body);
-            log.info("{} receive message:{}", receiver, message);
+            log.info("flag {} receive message:{}", flag, message);
             channel.basicAck(envelope.getDeliveryTag(), false);
         }
     }
 
     public static void main(String[] args) throws IOException, TimeoutException {
-        Receiver receiver = new Receiver("test1", "exchange");
+        Receiver receiver = new Receiver("consumer1", "exchange", ExchangeType.TOPIC, "test.hello", "test");
         receiver.connect();
-
-
-        Receiver receiver2 = new Receiver("test2", "exchange");
-        receiver2.connect();
-
         receiver.consume();
+
+        Receiver receiver2 = new Receiver("consumer2", "exchange", ExchangeType.TOPIC, "test.#", "test1");
+        receiver2.connect();
         receiver2.consume();
 
     }

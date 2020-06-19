@@ -5,6 +5,7 @@ import com.rabbitmq.client.ConfirmListener;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.tiger.rabbitmq.common.ChannelFactory;
+import com.tiger.rabbitmq.common.ExchangeType;
 import com.tiger.rabbitmq.common.MyMessage;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,20 +25,24 @@ import java.util.concurrent.TimeoutException;
  **/
 @Slf4j
 public class Sender {
-    private String queue = "test";
     private String exchange;
-
+    private String route;
+    private ExchangeType type;
+    private String queue = "test";
     private Channel channel;
 
-    public Sender(String queue, String exchange) {
-        this.queue = queue;
+    public Sender(String exchange, String route, ExchangeType type, String queue) {
         this.exchange = exchange;
+        this.route = route;
+        this.type = type;
+        this.queue = queue;
     }
 
     public void connect() throws IOException, TimeoutException {
         channel = ChannelFactory.createChannel();
-        // channel.queueDeclare(queue, true, false, false, null);
-        channel.exchangeDeclare(exchange, "fanout");
+        // 队列交给消费者声明
+        // channel.queueDeclare(queue, false, false, true, null);
+        channel.exchangeDeclare(exchange, type.name);
         channel.addConfirmListener(new ConfirmListener() {
             @Override
             public void handleAck(long deliveryTag, boolean multiple) throws IOException {
@@ -55,7 +60,7 @@ public class Sender {
 
     public void send(MyMessage myMessage) throws IOException {
         if (!Objects.isNull(channel)) {
-            channel.basicPublish(exchange, "", null, MyMessage.convertToByte(myMessage));
+            channel.basicPublish(exchange, route, null, MyMessage.convertToByte(myMessage));
             log.info("send message:{}", myMessage);
         } else {
             log.warn("channel is not active");
@@ -69,28 +74,40 @@ public class Sender {
 
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
         ScheduledExecutorService schedulePool = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2);
-        Sender sender = new Sender("test","exchange");
-        sender.connect();
+        schedulePool.scheduleAtFixedRate(new SendTask("msg1", "exchange", "test.hello", ExchangeType.TOPIC, ""), 0, 1000, TimeUnit.MILLISECONDS);
+        schedulePool.scheduleAtFixedRate(new SendTask("msg2", "exchange","test.hallo.", ExchangeType.TOPIC, ""), 0, 1000, TimeUnit.MILLISECONDS);
+    }
 
-        /*
-        for (int i = 0; i < 100000; i++) {
-            MyMessage message = new MyMessage();
-            message.setId(i + "");
-            message.setMessage("mesage-" + message.getId());
-            sender.send(message);
+    private static class SendTask implements Runnable {
+        private Sender sender;
+        private String name;
+
+        public SendTask(String name, String exchange, String route, ExchangeType type, String queue) {
+            this.name = name;
+            this.sender = new Sender(exchange, route, type, queue);
+            try {
+                sender.connect();
+            } catch (Exception e) {
+                try {
+                    sender.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                } catch (TimeoutException e1) {
+                    e1.printStackTrace();
+                }
+            }
         }
-        */
 
-        schedulePool.scheduleAtFixedRate(() -> {
+        @Override
+        public void run() {
             MyMessage message = new MyMessage();
             message.setId(String.valueOf(System.currentTimeMillis() / 1000));
-            message.setMessage("message-" + message.getId());
+            message.setMessage(name + "-" + message.getId());
             try {
-                sender.send(message);
+                this.sender.send(message);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }, 0, 1000, TimeUnit.MILLISECONDS);
-
+        }
     }
 }

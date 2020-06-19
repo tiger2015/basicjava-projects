@@ -2,10 +2,7 @@ package com.tiger.multithread.ch08;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class ThreadPoolTest {
     // 只有一个线程的线程池
@@ -32,14 +29,22 @@ public class ThreadPoolTest {
 
     private static ScheduledExecutorService scheduleThreadPool = Executors.newScheduledThreadPool(4);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         // singleThreadPool.execute(ThreadFactory.createTask());
-        singleThreadPool.execute(ThreadFactory.createTask());
+        // singleThreadPool.execute(ThreadFactory.createTask());
 
-        singleScheduleThreadPool.scheduleAtFixedRate(ThreadFactory.createTask(), 0, 1, TimeUnit.SECONDS);
+        // singleScheduleThreadPool.scheduleAtFixedRate(ThreadFactory.createTask(), 0, 1, TimeUnit.SECONDS);
 
+        MyTask task = new MyTask();
+        MyFutureTask futureTask = new MyFutureTask(task);
+        fixThreadPool.execute(futureTask);
+        while (!futureTask.isDone()){
 
+        }
+        System.out.println(futureTask.get());
 
+        //String s = future.get();
+       // System.out.println(s);
 
 
     }
@@ -63,5 +68,21 @@ public class ThreadPoolTest {
 
     }
 
+
+    static class MyTask implements Callable<String> {
+
+        @Override
+        public String call() throws Exception {
+            TimeUnit.SECONDS.sleep(5);
+            return "hello";
+        }
+    }
+
+    static class MyFutureTask extends FutureTask<String> {
+
+        public MyFutureTask(Callable<String> callable) {
+            super(callable);
+        }
+    }
 
 }

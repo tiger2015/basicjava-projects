@@ -51,7 +51,7 @@ public class ZookeeperApplication {
         //create("/lock/share_lock", "", CreateMode.PERSISTENT);
         //update("/test/node1", "node");
 
-        // create("/test/seq", "", CreateMode.PERSISTENT_SEQUENTIAL);
+        create("/test/seq", "", CreateMode.PERSISTENT_SEQUENTIAL);
 
 
         // update("/lock/share_lock", "");
@@ -61,7 +61,8 @@ public class ZookeeperApplication {
         // new Thread(new UpdateThread()).start();
         //zooKeeper.close();
 
-        zooKeeper.close();
+       // zooKeeper.close();
+        /**
         List<ACL> acls = new ArrayList<>();
         // 采用加密的方式授权，在访问时不需要加密
         String s = DigestAuthenticationProvider.generateDigest("test:test");
@@ -73,6 +74,7 @@ public class ZookeeperApplication {
         Stat stat = new Stat();
         get("/auth_test", stat);
         log.info(stat.toString());
+         **/
     }
 
 

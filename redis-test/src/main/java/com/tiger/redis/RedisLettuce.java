@@ -5,6 +5,7 @@ import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.async.RedisAsyncCommands;
 import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.cluster.RedisClusterClient;
+import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -20,15 +21,24 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class RedisLettuce {
     public static void main(String[] args) {
-        // standalone();
+        standalone();
        // sentinel();
 
         //redisFuture();
-        futureWithListener();
+        // futureWithListener();
     }
 
     private static void standalone() {
-        RedisClient client = RedisClient.create("redis://tiger@192.168.100.201:6379/0");
+        RedisURI.Builder builder = RedisURI.builder();
+        builder.withHost("192.168.100.201");
+        builder.withPort(6379);
+        builder.withPassword("tiger");
+        builder.withDatabase(0);
+
+
+       // RedisClient client = RedisClient.create("redis://tiger@192.168.100.201:6379/0");
+        RedisClient client = RedisClient.create(builder.build());
+
         StatefulRedisConnection<String, String> connect = client.connect();
         log.info("connect");
         RedisCommands<String, String> commands = connect.sync();
@@ -66,6 +76,7 @@ public class RedisLettuce {
         uris.add(RedisURI.create("redis://tiger@192.168.100.201:8380/0"));
         uris.add(RedisURI.create("redis://tiger@192.168.100.201:8381/0"));
         RedisClusterClient client = RedisClusterClient.create(uris);
+        StatefulRedisClusterConnection<String, String> connect = client.connect();
     }
 
     private static void pipeline(){

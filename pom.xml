@@ -24,6 +24,8 @@
         <module>rmi-server</module>
         <module>rmi-client</module>
         <module>rabbitmq-test</module>
+        <module>thrift-client</module>
+        <module>thrift-server</module>
     </modules>
 
     <name>basicjava-projects</name>
@@ -72,6 +74,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>28.2-jre</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.thrift</groupId>
+            <artifactId>libthrift</artifactId>
+            <version>0.13.0</version>
         </dependency>
     </dependencies>
     <build>
