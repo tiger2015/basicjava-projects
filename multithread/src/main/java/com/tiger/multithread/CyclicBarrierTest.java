@@ -3,6 +3,9 @@ package com.tiger.multithread;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
+/**
+ * CyclicBarrier 内部使用了ReentrantLock
+ */
 public class CyclicBarrierTest {
     private static int threadCount = 3;
     // 达到同一点后开始执行
@@ -16,7 +19,7 @@ public class CyclicBarrierTest {
             new Thread(new MyRunnable(), "thread-" + i).start();
         }
         try {
-            cyclicBarrier.await();
+            cyclicBarrier.await(); //阻塞
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (BrokenBarrierException e) {

@@ -12,6 +12,15 @@ public class CountDownLatchTest {
         for (int i = 0; i < threadCount; i++) {
             new Thread(new MyRunnable(), "thread-" + i).start();
         }
+        new Thread(()->{
+            try {
+                downLatch.await();
+                System.out.println("other finish");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
         try {
             System.out.println("waiting for");
             downLatch.await();
