@@ -31,20 +31,26 @@ public class RedisLettuce {
     private static void standalone() {
         RedisURI.Builder builder = RedisURI.builder();
         builder.withHost("192.168.100.201");
-        builder.withPort(6379);
+        builder.withPort(8379);
         builder.withPassword("tiger");
         builder.withDatabase(0);
 
 
+
        // RedisClient client = RedisClient.create("redis://tiger@192.168.100.201:6379/0");
         RedisClient client = RedisClient.create(builder.build());
-
         StatefulRedisConnection<String, String> connect = client.connect();
         log.info("connect");
         RedisCommands<String, String> commands = connect.sync();
+        String nodes = commands.clusterNodes();
+        log.info("nodes:{}", nodes);
+
+        /**
+
         ScoredValueScanCursor<String> zset = commands.zscan("zset");
         List<ScoredValue<String>> values = zset.getValues();
         values.forEach(System.out::println);
+         **/
         connect.close();
         client.shutdown();
         log.info("shutdown");
@@ -77,6 +83,7 @@ public class RedisLettuce {
         uris.add(RedisURI.create("redis://tiger@192.168.100.201:8381/0"));
         RedisClusterClient client = RedisClusterClient.create(uris);
         StatefulRedisClusterConnection<String, String> connect = client.connect();
+        connect.sync().lrange("list", 0 , 10);
     }
 
     private static void pipeline(){

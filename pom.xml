@@ -26,6 +26,7 @@
         <module>rabbitmq-test</module>
         <module>thrift-client</module>
         <module>thrift-server</module>
+        <module>common-pool</module>
     </modules>
 
     <name>basicjava-projects</name>

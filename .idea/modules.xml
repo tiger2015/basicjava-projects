@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/basicjava-projects.iml" filepath="$PROJECT_DIR$/basicjava-projects.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common-pool/common-pool.iml" filepath="$PROJECT_DIR$/common-pool/common-pool.iml" />
       <module fileurl="file://$PROJECT_DIR$/java-nio/java-nio.iml" filepath="$PROJECT_DIR$/java-nio/java-nio.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvm-test/jvm-test.iml" filepath="$PROJECT_DIR$/jvm-test/jvm-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/multithread/multithread.iml" filepath="$PROJECT_DIR$/multithread/multithread.iml" />
