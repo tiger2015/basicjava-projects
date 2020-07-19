@@ -27,6 +27,7 @@
         <module>thrift-client</module>
         <module>thrift-server</module>
         <module>common-pool</module>
+        <module>data-structure</module>
     </modules>
 
     <name>basicjava-projects</name>
