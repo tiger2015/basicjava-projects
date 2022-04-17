@@ -1,10 +1,12 @@
 package com.tiger.multithread;
 
+import java.sql.DriverManager;
 import java.util.concurrent.TimeUnit;
 
 public class VolatileTest {
     final static int MAX = 5;
     static volatile int init_value = 0;
+
 
     public static void main(String[] args) {
 
@@ -16,6 +18,7 @@ public class VolatileTest {
                     System.out.println("init value update to:" + init_value);
                     init_value = localValue;
                 }
+
             }
 //            while(init_value < MAX){
 //                System.out.println("init value update to:" + init_value);
@@ -38,5 +41,14 @@ public class VolatileTest {
             }
 
         }, "Writer").start();
+
+
+
+
+
+
     }
+
+
+
 }

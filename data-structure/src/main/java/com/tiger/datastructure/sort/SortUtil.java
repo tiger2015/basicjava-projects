@@ -154,15 +154,17 @@ public class SortUtil {
      * @param <T>
      */
     public static <T extends Comparable> void mergeSort(Class<T> tClass, T[] values, int start, int end) {
-        if (start >= end) return;
+        if (start >= end - 1) return;
         int center = (start + end) / 2;
-        mergeSort(tClass, values, start, center);
-        mergeSort(tClass, values, center + 1, end);
+        mergeSort(tClass, values, start, center); // 注意是左闭右开:[start, center)
+        mergeSort(tClass, values, center, end); // [center, end)
+        merge(tClass, values, start, center, end);
     }
 
 
     /**
-     *  将两个有序分组合并
+     * 将两个有序分组合并
+     *
      * @param tClass
      * @param values
      * @param start
@@ -171,6 +173,7 @@ public class SortUtil {
      * @param <T>
      */
     private static <T extends Comparable> void merge(Class<T> tClass, T[] values, int start, int center, int end) {
+        System.out.println("start:" + start + ", center:" + center + ", end:" + end);
         int left = start;
         int right = center;
         int index = 0;
@@ -184,27 +187,26 @@ public class SortUtil {
                 tempArray[index++] = values[right++];
             }
         }
-
-        if (left == center) { // 将右边剩余的
-            for (; right < end; ) {
-                tempArray[index++] = values[right++];
-            }
-        }
-
         if (right == end) { // 将左边的剩余
             for (; left < center; ) {
                 tempArray[index++] = values[left++];
             }
         }
+        if (left == center) { // 将右边剩余的
+            for (; right < end; ) {
+                tempArray[index++] = values[right++];
+            }
+        }
         for (int i = start; i < end; i++) {
             values[i] = tempArray[i - start];
         }
+        System.out.println(Arrays.toString(values));
     }
 
 
     public static void main(String[] args) {
         Double[] values = {5D, 1D, 12D, -5D, 16D, 2D, 12D, 14D};
-        selectSort(values);
+        //selectSort(values);
         //quickSort(values, 0, values.length - 1);
         //shellSort(values);
         mergeSort(Double.class, values, 0, values.length);

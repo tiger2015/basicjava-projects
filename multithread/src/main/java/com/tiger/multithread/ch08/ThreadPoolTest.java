@@ -1,8 +1,13 @@
 package com.tiger.multithread.ch08;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ThreadPoolTest {
     // 只有一个线程的线程池
@@ -29,29 +34,35 @@ public class ThreadPoolTest {
 
     private static ScheduledExecutorService scheduleThreadPool = Executors.newScheduledThreadPool(4);
 
+    private static AtomicInteger index = new AtomicInteger(0);
+
+
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         // singleThreadPool.execute(ThreadFactory.createTask());
         // singleThreadPool.execute(ThreadFactory.createTask());
 
         // singleScheduleThreadPool.scheduleAtFixedRate(ThreadFactory.createTask(), 0, 1, TimeUnit.SECONDS);
 
-        MyTask task = new MyTask();
-        MyFutureTask futureTask = new MyFutureTask(task);
-        fixThreadPool.execute(futureTask);
+        /**
+         MyTask task = new MyTask();
+         MyFutureTask futureTask = new MyFutureTask(task);
+         fixThreadPool.execute(futureTask);
 
-        try {
-            String s = futureTask.get(3, TimeUnit.SECONDS);
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-            futureTask.cancel(true);
-        }
+         try {
+         String s = futureTask.get(3, TimeUnit.SECONDS);
+         } catch (TimeoutException e) {
+         e.printStackTrace();
+         futureTask.cancel(true);
+         }
 
-        System.out.println(futureTask.isCancelled());
+         System.out.println(futureTask.isCancelled());
 
 
-        fixThreadPool.shutdown();
-        //String s = future.get();
-       // System.out.println(s);
+         fixThreadPool.shutdown();
+         //String s = future.get();
+         // System.out.println(s);
+         **/
+        singleScheduleThreadPool.scheduleAtFixedRate(new ScheduleTask(), 0, 1, TimeUnit.SECONDS);
 
 
     }
@@ -92,4 +103,18 @@ public class ThreadPoolTest {
         }
     }
 
+
+    public static class ScheduleTask implements Runnable {
+
+
+        @Override
+        public void run() {
+
+            int val = index.incrementAndGet();
+            if (val > 10) {
+                throw new IndexOutOfBoundsException("index is above 10");
+            }
+            System.out.println(val);
+        }
+    }
 }

@@ -24,51 +24,52 @@ public class NIOServer {
     public void init() {
         try {
             server = ServerSocketChannel.open();
+            selector = Selector.open();
             // 设置为非阻塞
             server.configureBlocking(false);
             server.setOption(StandardSocketOptions.SO_RCVBUF, 1024 * 1024);
             server.bind(new InetSocketAddress(port));
-            selector = Selector.open();
             server.register(selector, SelectionKey.OP_ACCEPT);
         } catch (IOException e) {
-            log.info("init error", e);
+            log.error("init error", e);
         }
     }
 
-    public void start() {
+    public void start() throws IOException {
         while (true) {
-            try {
-                int count = selector.select(3000);
-                if (count == 0) {
-                    continue;
-                }
-                Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
-                while (iterator.hasNext()) {
+
+            int count = selector.select(3000);
+            if (count <= 0) {
+                continue;
+            }
+            Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
+            while (iterator.hasNext()) {
+                try {
                     SelectionKey key = iterator.next();
                     if (key.isAcceptable()) {
-                        handelAcceptable(key);
-                    } else if (key.isWritable()) {
-                        handleWritable(key);
-                    } else if (key.isReadable()) {
+                        handleAcceptable(key);
+                    }
+                    if (key.isReadable()) {
                         handleReadable(key);
                     }
+                } catch (Exception e) {
+                    log.error("server occur error", e);
+                } finally {
                     iterator.remove();
                 }
-            } catch (Exception e) {
-                log.info("server occur error", e);
             }
         }
     }
 
-    private void handelAcceptable(SelectionKey key) {
+    private void handleAcceptable(SelectionKey key) throws IOException {
         try {
-            ServerSocketChannel channel = (ServerSocketChannel) key.channel();
-            SocketChannel socketChannel = channel.accept();
+            SocketChannel socketChannel = server.accept();
             socketChannel.configureBlocking(false);
             socketChannel.register(key.selector(), SelectionKey.OP_READ, new ClientConnection(key.selector(), socketChannel));
-            log.info("connect:{}", socketChannel.socket().getInetAddress());
+            log.info("connect:{}", socketChannel.getRemoteAddress());
         } catch (IOException e) {
-            e.printStackTrace();
+            key.channel().close();
+            key.cancel();
         }
     }
 
@@ -77,19 +78,8 @@ public class NIOServer {
         connection.read();
     }
 
-    private void handleWritable(SelectionKey key) {
-        ClientConnection connection = (ClientConnection) key.attachment();
-        if (connection == null) {
-            log.info("connection close");
-        } else {
-            connection.write();
-        }
-    }
-
-
-
-    public static void main(String[] args) {
-        NIOServer server = new NIOServer(9000);
+    public static void main(String[] args) throws IOException {
+        NIOServer server = new NIOServer(6666);
         server.init();
         server.start();
     }

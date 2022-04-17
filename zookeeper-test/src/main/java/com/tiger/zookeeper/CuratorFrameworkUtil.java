@@ -17,7 +17,8 @@ public class CuratorFrameworkUtil {
         builder.retryPolicy(retryPolicy);
         builder.connectionTimeoutMs(10 * 1000);
         builder.sessionTimeoutMs(15*1000);
-        builder.connectString("192.168.100.201:2181,192.168.100.201:2182,192.168.100.201:2183");
+//        builder.connectString("192.168.100.201:2181,192.168.100.201:2182,192.168.100.201:2183");
+        builder.connectString("192.168.100.101:2181,192.168.100.102:2181,192.168.100.103:2181");
     }
 
 

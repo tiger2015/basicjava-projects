@@ -34,7 +34,7 @@ public class ZookeeperApplication {
 
     static {
         try {
-            zooKeeper = new ZooKeeper("192.168.100.201:2181,192.168.100.201:2182", 3000, new ZookeeperWatcher());
+            zooKeeper = new ZooKeeper("192.168.100.101:2181,192.168.100.102:2181", 3000, new ZookeeperWatcher());
         } catch (IOException e) {
             log.error("new zookeeper fail", e);
             zooKeeper = null;
@@ -75,6 +75,7 @@ public class ZookeeperApplication {
         get("/auth_test", stat);
         log.info(stat.toString());
          **/
+
     }
 
 

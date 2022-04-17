@@ -1,17 +1,21 @@
 package tiger;
 
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.*;
 
 public class Solution {
 
 
     public static void main(String[] args) {
-        // int[] datas = {4, 0, 5, 29, 14, 16, 9, 2, 12, 14, 7, 27, 15, 4, 8, 11, 2, 18, 29, 3, 16, 8, 10, 22, 11, 10, 15, 1, 1, 0, 28, 5, 0, 26, 4, 6, 12, 5, 8, 16, 12, 8, 14, 27, 12, 14, 0, 6, 2, 29, 9, 10, 8, 11, 3};
+        // int[] datas = {4, 0, 5, 29, 14, 16, 9, 2, 12, 14, 7, 27, 15, 4, 8, 11, 2, 18, 29, 3, 16, 8, 10, 22, 11,
+        // 10, 15, 1, 1, 0, 28, 5, 0, 26, 4, 6, 12, 5, 8, 16, 12, 8, 14, 27, 12, 14, 0, 6, 2, 29, 9, 10, 8, 11, 3};
         // nextPermutation(datas);
         // System.out.println(Arrays.toString(datas));
-        String str = "()(()"; // 解决这种
-        System.out.println(longestValidParentheses(str));
+
+        String[] words = {"word","good","best","good"};
+        String s = "wordgoodgoodgoodbestword";
+        List<Integer> list = findSubstring2(s, words);
+        System.out.println(list);
+
     }
 
 
@@ -111,4 +115,101 @@ public class Solution {
         }
         return max < count ? count : max;
     }
+
+    public int threeSumClosest(int[] nums, int target) {
+        int len = nums.length;
+        int[] temp = new int[len];
+        for (int i = 0; i < len; i++) {
+            temp[i] = target - nums[i];
+        }
+        // 找两个数最近的
+        for (int i = 0; i < len; i++) {
+            for (int k = i + 1; k < len; k++) {
+
+
+            }
+
+        }
+
+        return 0;
+
+    }
+
+
+    public static List<Integer> findSubstring(String s, String[] words) {
+        List<Integer> result = new ArrayList<>();
+        List<Integer> indexes = new ArrayList<>();
+        int totalLen = 0;
+        for (int i = 0; i < words.length; i++) {
+            int index = 0;
+            while (index < s.length()) {
+                String temp = s.substring(index);
+                int firstIndex = temp.indexOf(words[i].charAt(0)); // 找到匹配的第一个字符
+                if (firstIndex < 0 || firstIndex + words[i].length() > temp.length()) break;
+                String compareWord = temp.substring(firstIndex, firstIndex + words[i].length());
+                if (compareWord.equals(words[i])) {
+                    if (!indexes.contains(firstIndex + index)) indexes.add(firstIndex + index);
+                }
+                index++;
+            }
+            totalLen += words[i].length();
+        }
+        System.out.println(indexes);
+        int wordLen = totalLen / words.length;
+        int start;
+        for (int i = 0; i < indexes.size(); i++) {
+            start = indexes.get(i);
+            if (start + totalLen > s.length()) continue; // 剩余字符不足所有字符的长度
+            String temp = s.substring(start, start + totalLen);  // 查看子串是否包含所有单词
+            System.out.println("===" + temp);
+
+            List<String> wordList = new ArrayList<>();
+            for (int k = 0; k < words.length; k++) {
+
+
+                wordList.add(temp.substring(k * wordLen, (k + 1) * wordLen));
+            }
+            boolean flag = true;
+            for (int k = 0; k < words.length; k++) {
+                if (!wordList.contains(words[k])) {
+                    flag = false;
+                    break;
+                } else { // 移除已存在的
+                    wordList.remove(words[k]);
+                }
+            }
+            if (flag) result.add(start);
+        }
+        return result;
+    }
+
+    public static List<Integer> findSubstring2(String s, String[] words) {
+        List<Integer> result = new ArrayList<>();
+        int wordLen = words[0].length();
+        int totalLen = words.length * wordLen;
+        Map<String,Integer> wordsMap = new HashMap<>();
+        for (int k = 0; k < words.length; k++) {
+           if (wordsMap.containsKey(words[k])) wordsMap.put(words[k], wordsMap.get(words[k])+1);
+           else  wordsMap.put(words[k], 1);
+        }
+        for (int i = 0; i < s.length() - totalLen+1; i++) {
+            String subStr = s.substring(i, i + totalLen);
+            Map<String,Integer> tempWordsMap = new HashMap<>();
+            for (int k = 0; k < words.length ; k++) {
+                String tempWord = subStr.substring(k * wordLen, (k + 1) * wordLen);
+                if(tempWordsMap.containsKey(tempWord)) tempWordsMap.put(tempWord, tempWordsMap.get(tempWord)+1);
+                else tempWordsMap.put(tempWord, 1);
+            }
+            for(String word: wordsMap.keySet()){
+                if(tempWordsMap.containsKey(word) && tempWordsMap.get(word).equals(wordsMap.get(word))){
+                    tempWordsMap.remove(word);
+                }
+            }
+            if(tempWordsMap.size() == 0){
+                result.add(i);
+            }
+        }
+        return result;
+    }
+
 }
