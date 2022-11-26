@@ -15,22 +15,18 @@
         <module>my-netty</module>
         <module>zookeeper-test</module>
         <module>redis-test</module>
-        <module>rpc-provider</module>
-        <module>rpc-api</module>
-        <module>rpc-consumer</module>
         <module>jvm-test</module>
         <module>java-nio</module>
-        <module>rmi-common</module>
-        <module>rmi-server</module>
-        <module>rmi-client</module>
         <module>rabbitmq-test</module>
-        <module>thrift-client</module>
-        <module>thrift-server</module>
         <module>common-pool</module>
         <module>data-structure</module>
         <module>elastic-search-test</module>
         <module>java-serial</module>
         <module>leetcode</module>
+        <module>ssh-demo</module>
+        <module>rmi-test</module>
+        <module>rpc-test</module>
+        <module>thrift-test</module>
     </modules>
 
     <name>basicjava-projects</name>
@@ -41,6 +37,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <log4j2.version>2.17.1</log4j2.version>
     </properties>
 
     <dependencies>
@@ -54,21 +51,27 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.8</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.12.1</version>
+            <version>${log4j2.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.12.1</version>
+            <version>${log4j2.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.12.1</version>
+            <version>${log4j2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jul</artifactId>
+            <version>${log4j2.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -86,6 +89,15 @@
             <version>0.13.0</version>
         </dependency>
     </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>4.1.65.Final</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <build>
     </build>
 </project>

@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>basicjava-projects</artifactId>
         <groupId>tiger</groupId>
+        <artifactId>basicjava-projects</artifactId>
         <version>1.0</version>
     </parent>
-
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>java-serial</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>rmi-test</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
 
-    <name>java-serial</name>
+    <name>rmi-test</name>
+    <!-- FIXME change it to the project's website -->
+    <url>http://www.example.com</url>
+    <modules>
+        <module>rmi-common</module>
+        <module>rmi-client</module>
+        <module>rmi-server</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-    <dependencies>
 
-        <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>kryo</artifactId>
-            <version>4.0.0</version>
-        </dependency>
+    <dependencies>
 
     </dependencies>
 
     <build>
     </build>
-
 </project>

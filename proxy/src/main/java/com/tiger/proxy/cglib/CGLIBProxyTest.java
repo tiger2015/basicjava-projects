@@ -12,7 +12,7 @@ public class CGLIBProxyTest {
         enhancer.setSuperclass(Caculator.class);  // 设置父类
         enhancer.setCallback(new CaculatorProxy());
         Caculator caculator = (Caculator) enhancer.create();
-        double result = caculator.add(1.2, 3.4);
+        double result = caculator.subtraction(1.2, 3.4);
         System.out.println(result);
     }
 }
