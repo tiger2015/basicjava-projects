@@ -112,3 +112,5 @@ buildNumber.properties
 /.idea/misc.xml
 /.idea/compiler.xml
 /.idea/encodings.xml
+
+/*/*.impl

@@ -27,6 +27,8 @@
         <module>rmi-test</module>
         <module>rpc-test</module>
         <module>thrift-test</module>
+        <module>mapstruct-test</module>
+        <module>file-test</module>
     </modules>
 
     <name>basicjava-projects</name>
@@ -51,7 +53,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.8</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
