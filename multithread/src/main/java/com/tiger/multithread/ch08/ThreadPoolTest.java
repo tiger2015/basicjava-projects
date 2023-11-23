@@ -38,11 +38,18 @@ public class ThreadPoolTest {
         MyTask task = new MyTask();
         MyFutureTask futureTask = new MyFutureTask(task);
         fixThreadPool.execute(futureTask);
-        while (!futureTask.isDone()){
 
+        try {
+            String s = futureTask.get(3, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+            futureTask.cancel(true);
         }
-        System.out.println(futureTask.get());
 
+        System.out.println(futureTask.isCancelled());
+
+
+        fixThreadPool.shutdown();
         //String s = future.get();
        // System.out.println(s);
 

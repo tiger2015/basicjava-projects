@@ -21,6 +21,8 @@
         <module>netty-rpc</module>
         <module>thrift-test</module>
         <module>rmi-test</module>
+        <module>common-pool</module>
+        <module>data-structure</module>
     </modules>
 
     <name>basicjava-projects</name>

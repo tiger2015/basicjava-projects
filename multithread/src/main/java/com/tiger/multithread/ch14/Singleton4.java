@@ -1,5 +1,8 @@
 package com.tiger.multithread.ch14;
 
+/**
+ * 双重检测
+ */
 public final class Singleton4 {
     private byte[] data = new byte[1024];
 

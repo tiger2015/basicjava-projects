@@ -1,5 +1,9 @@
 package com.tiger.multithread.ch14;
 
+/**
+ *
+ * 枚举方式
+ */
 public enum  Singleton7 {
 
     INSTANCE;
