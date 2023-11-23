@@ -21,7 +21,7 @@ public class NIOServer {
         this.port = port;
     }
 
-    public void init() {
+    public boolean init() {
         try {
             server = ServerSocketChannel.open();
             // 设置为非阻塞
@@ -30,9 +30,11 @@ public class NIOServer {
             server.bind(new InetSocketAddress(port));
             selector = Selector.open();
             server.register(selector, SelectionKey.OP_ACCEPT);
+            return true;
         } catch (IOException e) {
             log.info("init error", e);
         }
+        return false;
     }
 
     public void start() {
@@ -64,9 +66,11 @@ public class NIOServer {
         try {
             ServerSocketChannel channel = (ServerSocketChannel) key.channel();
             SocketChannel socketChannel = channel.accept();
+            socketChannel.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
             socketChannel.configureBlocking(false);
-            socketChannel.register(key.selector(), SelectionKey.OP_READ, new ClientConnection(key.selector(), socketChannel));
-            log.info("connect:{}", socketChannel.socket().getInetAddress());
+            socketChannel.register(key.selector(), SelectionKey.OP_READ, new ClientConnection(key.selector(),
+                    socketChannel));
+            log.info("connect:{}:{}", socketChannel.socket().getInetAddress(),socketChannel.socket().getPort());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -87,10 +91,10 @@ public class NIOServer {
     }
 
 
-
     public static void main(String[] args) {
-        NIOServer server = new NIOServer(9000);
-        server.init();
-        server.start();
+        NIOServer server = new NIOServer(9009);
+        if (server.init()) {
+            server.start();
+        }
     }
 }

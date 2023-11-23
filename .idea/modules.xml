@@ -8,17 +8,20 @@
       <module fileurl="file://$PROJECT_DIR$/multithread/multithread.iml" filepath="$PROJECT_DIR$/multithread/multithread.iml" />
       <module fileurl="file://$PROJECT_DIR$/my-netty/my-netty.iml" filepath="$PROJECT_DIR$/my-netty/my-netty.iml" />
       <module fileurl="file://$PROJECT_DIR$/my-quartz/my-quartz.iml" filepath="$PROJECT_DIR$/my-quartz/my-quartz.iml" />
+      <module fileurl="file://$PROJECT_DIR$/netty-rpc/netty-rpc.iml" filepath="$PROJECT_DIR$/netty-rpc/netty-rpc.iml" />
       <module fileurl="file://$PROJECT_DIR$/proxy/proxy.iml" filepath="$PROJECT_DIR$/proxy/proxy.iml" />
       <module fileurl="file://$PROJECT_DIR$/rabbitmq-test/rabbitmq-test.iml" filepath="$PROJECT_DIR$/rabbitmq-test/rabbitmq-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/redis-test/redis-test.iml" filepath="$PROJECT_DIR$/redis-test/redis-test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rmi-client/rmi-client.iml" filepath="$PROJECT_DIR$/rmi-client/rmi-client.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rmi-common/rmi-common.iml" filepath="$PROJECT_DIR$/rmi-common/rmi-common.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rmi-server/rmi-server.iml" filepath="$PROJECT_DIR$/rmi-server/rmi-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rmi-test/rmi-client/rmi-client.iml" filepath="$PROJECT_DIR$/rmi-test/rmi-client/rmi-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rmi-test/rmi-common/rmi-common.iml" filepath="$PROJECT_DIR$/rmi-test/rmi-common/rmi-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rmi-test/rmi-server/rmi-server.iml" filepath="$PROJECT_DIR$/rmi-test/rmi-server/rmi-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rmi-test/rmi-test.iml" filepath="$PROJECT_DIR$/rmi-test/rmi-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/rpc-api/rpc-api.iml" filepath="$PROJECT_DIR$/rpc-api/rpc-api.iml" />
       <module fileurl="file://$PROJECT_DIR$/rpc-consumer/rpc-consumer.iml" filepath="$PROJECT_DIR$/rpc-consumer/rpc-consumer.iml" />
       <module fileurl="file://$PROJECT_DIR$/rpc-provider/rpc-provider.iml" filepath="$PROJECT_DIR$/rpc-provider/rpc-provider.iml" />
       <module fileurl="file://$PROJECT_DIR$/thrift-client/thrift-client.iml" filepath="$PROJECT_DIR$/thrift-client/thrift-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/thrift-server/thrift-server.iml" filepath="$PROJECT_DIR$/thrift-server/thrift-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/thrift-test/thrift-test.iml" filepath="$PROJECT_DIR$/thrift-test/thrift-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/zookeeper-test/zookeeper-test.iml" filepath="$PROJECT_DIR$/zookeeper-test/zookeeper-test.iml" />
     </modules>
   </component>

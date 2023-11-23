@@ -15,17 +15,12 @@
         <module>my-netty</module>
         <module>zookeeper-test</module>
         <module>redis-test</module>
-        <module>rpc-provider</module>
-        <module>rpc-api</module>
-        <module>rpc-consumer</module>
         <module>jvm-test</module>
         <module>java-nio</module>
-        <module>rmi-common</module>
-        <module>rmi-server</module>
-        <module>rmi-client</module>
         <module>rabbitmq-test</module>
-        <module>thrift-client</module>
-        <module>thrift-server</module>
+        <module>netty-rpc</module>
+        <module>thrift-test</module>
+        <module>rmi-test</module>
     </modules>
 
     <name>basicjava-projects</name>

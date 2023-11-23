@@ -9,23 +9,28 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 public class ClientConnection {
     private Selector selector;
     private SocketChannel channel;
+    private ByteBuffer buffer;
 
     public ClientConnection(Selector selector, SocketChannel channel) {
         this.selector = selector;
         this.channel = channel;
+        buffer = ByteBuffer.allocate(1024);
     }
 
     public void read() {
         try {
-            ByteBuffer buffer = ByteBuffer.allocate(1024);
-            while (channel.read(buffer) > 0) {
+            int len;
+            while ((len = channel.read(buffer)) > 0) {
                 buffer.flip();
-                log.info("read：" + new String(buffer.array(), "UTF-8"));
+                byte[] msg = new byte[len];
+                buffer.get(msg);
+                log.info("read：" + new String(msg, StandardCharsets.UTF_8));
                 buffer.clear();
             }
             channel.register(selector, SelectionKey.OP_WRITE, this);
