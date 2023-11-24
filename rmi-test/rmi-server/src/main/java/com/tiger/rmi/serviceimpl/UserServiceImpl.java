@@ -3,13 +3,11 @@ package com.tiger.rmi.serviceimpl;
 import com.tiger.rmi.modle.User;
 import com.tiger.rmi.service.UserService;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class UserServiceImpl extends UnicastRemoteObject implements UserService {
     public UserServiceImpl() throws RemoteException {

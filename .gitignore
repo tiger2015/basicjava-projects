@@ -116,3 +116,5 @@ buildNumber.properties
 *.iml
 /**/*.iml
 /**/.idea/*
+.idea/**
+*.iml

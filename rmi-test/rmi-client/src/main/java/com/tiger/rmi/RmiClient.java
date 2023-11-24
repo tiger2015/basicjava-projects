@@ -1,13 +1,9 @@
 package com.tiger.rmi;
 
-import com.tiger.rmi.modle.User;
 import com.tiger.rmi.service.HelloService;
 import com.tiger.rmi.service.UserService;
 
-import java.net.MalformedURLException;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
