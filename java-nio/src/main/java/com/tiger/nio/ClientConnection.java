@@ -24,16 +24,11 @@ public class ClientConnection {
         try {
             ByteBuffer buffer = ByteBuffer.allocate(1024);
             int len = 0;
-            while ( (len = channel.read(buffer)) > 0) {
-                byte[] msg = new byte[len];
-            int len;
             while ((len = channel.read(buffer)) > 0) {
                 buffer.flip();
-                buffer.get(msg);
-                log.info("receive from {}:{}", channel.getRemoteAddress(), new String(msg, StandardCharsets.UTF_8));
                 byte[] msg = new byte[len];
                 buffer.get(msg);
-                log.info("read：" + new String(msg, StandardCharsets.UTF_8));
+                log.info("receive from {}:{}", channel.getRemoteAddress(), new String(msg, StandardCharsets.UTF_8));
                 buffer.clear();
             }
         } catch (IOException e) {

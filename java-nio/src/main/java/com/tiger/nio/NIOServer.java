@@ -70,7 +70,7 @@ public class NIOServer {
             socketChannel.configureBlocking(false);
             socketChannel.register(key.selector(), SelectionKey.OP_READ, new ClientConnection(key.selector(),
                     socketChannel));
-            log.info("connect:{}:{}", socketChannel.socket().getInetAddress(),socketChannel.socket().getPort());
+            log.info("connect:{}:{}", socketChannel.socket().getInetAddress(), socketChannel.socket().getPort());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,7 +86,7 @@ public class NIOServer {
         if (connection == null) {
             log.info("connection close");
         } else {
-            connection.write();
+            connection.write("hello");
         }
     }
 
