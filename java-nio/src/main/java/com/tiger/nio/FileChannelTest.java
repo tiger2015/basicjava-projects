@@ -24,13 +24,6 @@ public class FileChannelTest {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (channel != null) {
-                try {
-                    channel.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
             if (fis != null) {
                 try {
                     fis.close();
@@ -89,6 +82,7 @@ public class FileChannelTest {
         long end = System.currentTimeMillis();
         System.out.println(end - start);
         TimeUnit.SECONDS.sleep(30);
+
         start = System.currentTimeMillis();
         readByBufferedInputStream(file); // 1530ms  1844ms  1563ms
         end = System.currentTimeMillis();

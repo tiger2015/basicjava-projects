@@ -23,6 +23,12 @@
         <module>rmi-test</module>
         <module>common-pool</module>
         <module>data-structure</module>
+        <module>elastic-search-test</module>
+        <module>file-test</module>
+        <module>java-serial</module>
+        <module>leetcode</module>
+        <module>ssh-demo</module>
+        <module>mapstruct-test</module>
     </modules>
 
     <name>basicjava-projects</name>

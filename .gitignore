@@ -112,5 +112,9 @@ buildNumber.properties
 /.idea/misc.xml
 /.idea/compiler.xml
 /.idea/encodings.xml
+
+*.iml
+/**/*.iml
+/**/.idea/*
 .idea/**
 *.iml

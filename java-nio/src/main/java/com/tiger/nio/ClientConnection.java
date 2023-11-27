@@ -3,10 +3,7 @@ package com.tiger.nio;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.nio.channels.ClosedChannelException;
-import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
@@ -25,25 +22,24 @@ public class ClientConnection {
 
     public void read() {
         try {
-            int len;
+            ByteBuffer buffer = ByteBuffer.allocate(1024);
+            int len = 0;
             while ((len = channel.read(buffer)) > 0) {
                 buffer.flip();
                 byte[] msg = new byte[len];
                 buffer.get(msg);
-                log.info("read：" + new String(msg, StandardCharsets.UTF_8));
+                log.info("receive from {}:{}", channel.getRemoteAddress(), new String(msg, StandardCharsets.UTF_8));
                 buffer.clear();
             }
-            channel.register(selector, SelectionKey.OP_WRITE, this);
         } catch (IOException e) {
             e.printStackTrace();
             close();
         }
     }
 
-    public void write() {
+    public void write(String msg) {
         try {
-            channel.write(ByteBuffer.wrap("Hello\r\n".getBytes("UTF-8")));
-            channel.register(selector, SelectionKey.OP_READ, this);
+            channel.write(ByteBuffer.wrap(msg.getBytes(StandardCharsets.UTF_8)));
         } catch (IOException e) {
             e.printStackTrace();
             close();

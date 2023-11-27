@@ -1,9 +1,10 @@
 package tiger;
 
 import org.junit.Test;
-import com.tiger.netty.util.ByteUtil;
+import com.tiger.chatroom.util.ByteUtil;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 
 /**
  * Unit test for simple App.
@@ -36,5 +37,31 @@ public class AppTest {
         System.out.println(s);
     }
 
+
+
+    @Test
+    public void test03(){
+
+        Class<?> declaredClass = Integer.class.getDeclaredClasses()[0];
+
+        Field cache = null;
+        try {
+            cache = declaredClass.getDeclaredField("cache");
+            cache.setAccessible(true);
+            Integer[] integers = (Integer[]) cache.get(declaredClass);
+            integers[130] = integers[129];
+            integers[131] = integers[129];
+            Integer a = 1;
+            if(a==(Integer)1 && a == (Integer)2 && a == (Integer) 3){
+                System.out.println("success");
+            }
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
 }

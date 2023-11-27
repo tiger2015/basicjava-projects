@@ -84,6 +84,8 @@ public class RedisLettuce {
         RedisClusterClient client = RedisClusterClient.create(uris);
         StatefulRedisClusterConnection<String, String> connect = client.connect();
         connect.sync().lrange("list", 0 , 10);
+
+        connect.getPartitions().getPartition(0);
     }
 
     private static void pipeline(){
@@ -91,6 +93,9 @@ public class RedisLettuce {
         client.setDefaultTimeout(Duration.ofSeconds(3));
         StatefulRedisConnection<String, String> connect = client.connect();
         RedisAsyncCommands<String, String> async = connect.async();
+
+
+
         // pipeline禁用自动提交
         async.setAutoFlushCommands(false);
         long start;

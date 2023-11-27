@@ -5,11 +5,12 @@ import java.util.concurrent.TimeUnit;
 public class VolatileFoo {
 
     final static int MAX = 5;
-    static int initValue = 0;
+    static volatile int initValue = 0;
 
 
     public static void main(String[] args) {
         new Thread(() -> {
+
             int localValue = initValue;
             while (localValue < MAX) {
                 if (initValue != localValue) {
@@ -17,6 +18,21 @@ public class VolatileFoo {
                     localValue = initValue;
                 }
             }
+
+            /**
+            while (initValue < MAX){
+
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                    System.out.printf("read init value [%d]\n", initValue);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+             **/
+
+
         }, "Reader").start();
 
         new Thread(() -> {
